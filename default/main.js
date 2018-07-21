@@ -1,6 +1,13 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 
+var units = ['harvester', 'upgrader', 'builder'];
+var lifeCount = {};
+for(unit in units)
+{
+  lifeCount[unit] = 0;
+}
+
 module.exports.loop = function () {
 
     for(var name in Memory.creeps) {
@@ -19,14 +26,14 @@ module.exports.loop = function () {
     var minUpgraders = 2;
 
     if(harvesters.length < minHarvesters) {
-        var newName = 'Harvester' + Game.time;
+        var newName = 'H' + lifeCount['harvester'];
         console.log('Spawning new harvester: ' + newName);
         Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE], newName,
             {memory: {role: 'harvester'}});
     }
 
     if(upgraders.length < minUpgraders) {
-        var newName = 'upgraders' + Game.time;
+        var newName = 'U' + lifeCount['upgrader'];
         console.log('Spawning new upgraders: ' + newName);
         Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE], newName,
             {memory: {role: 'upgrader'}});
