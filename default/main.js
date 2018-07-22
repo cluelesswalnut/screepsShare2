@@ -1,15 +1,14 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 
-var units = ['harvester', 'upgrader', 'builder'];
-var lifeCount = {};
-for(var unit in units)
-{
-  lifeCount[units[unit]] = 1;
-}
+// var units = ['harvester', 'upgrader', 'builder'];
+// Memory.lifeCount = {};
+// for(var unit in units)
+// {
+//   Memory.lifeCount[units[unit]] = 1;
+// }
 
 module.exports.loop = function () {
-
     for(var name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
@@ -26,22 +25,22 @@ module.exports.loop = function () {
     var minUpgraders = 5;
 
     if(harvesters.length < minHarvesters) {
-        var newName = 'H' + lifeCount['harvester'];
+        var newName = 'H' + Memory.lifeCount['harvester'];
         console.log('Spawning new harvester: ' + newName);
         if (Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE], newName,{memory: {role: 'harvester'}}) == OK)
         {
-          lifeCount['harvester']++;
+          Memory.lifeCount['harvester']++;
         }
     }
 
     if(upgraders.length < minUpgraders) {
-        var newName = 'U' + lifeCount['upgrader'];
+        var newName = 'U' + Memory.lifeCount['upgrader'];
         //lifeCount['upgrader']++;
         console.log('Spawning new upgraders: ' + newName);
         if (Game.spawns['Spawn1'].spawnCreep([WORK,CARRY,MOVE], newName,
             {memory: {role: 'upgrader'}}) == OK)
             {
-              lifeCount['upgrader']++;
+              Memory.lifeCount['upgrader']++;
             }
     }
 
