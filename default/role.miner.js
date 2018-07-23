@@ -32,16 +32,26 @@ module.exports = {
 
     //console.log("chosensource: " + chosenSource);
 
-    // if (chosenSource != undefined) {
-    //   let container = sources[chosenSource].pos.findInRange(FIND_STRUCTURES, 1, {
-    //     filter: {
-    //       structureType: STRUCTURE_CONTAINER
-    //     }
-    //   })[0];
-    // }
+
+    let allContainers = creep.room.find(FIND_STRUCTURES, {
+      filter: {
+        structureType: STRUCTURE_CONTAINER
+      }
+    });
+
+    //console.log(allContainers)
+
+    var onContainer = false;
+    for(var i in allContainers)
+    {
+      if(creep.pos.isEqualTo(allContainers[i]))
+      {
+        onContainer = true;
+      }
+    }
 
     //console.log("cont:" + container);
-    if (creep.pos.isEqualTo(containerBySource[0])) {
+    if (onContainer) {
       //console.log("on container");
       var sourceToHarvest = creep.pos.findInRange(FIND_SOURCES, 1);
       creep.harvest(sourceToHarvest[0]);

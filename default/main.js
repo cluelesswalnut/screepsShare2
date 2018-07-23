@@ -27,10 +27,10 @@ module.exports.loop = function() {
   var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
   console.log('miner: ' + miners.length);
 
-  var maxHarvesters = 5;
+  var maxHarvesters = 3;
   var maxUpgraders = 5;
-  var maxBuilders = 6;
-  var maxMiners = 0;
+  var maxBuilders = 3;
+  var maxMiners = 2;
 
   if (miners.length < maxMiners) {
     var newName = 'M' + Memory.lifeCount['miner'];
@@ -49,7 +49,7 @@ module.exports.loop = function() {
   else if (harvesters.length < maxHarvesters) {
     var newName = 'H' + Memory.lifeCount['harvester'];
     console.log('Spawning new harvester: ' + newName);
-    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], newName, {
+    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
         memory: {
           role: 'harvester'
         }
@@ -60,7 +60,7 @@ module.exports.loop = function() {
   else if (builders.length < maxBuilders) {
     var newName = 'B' + Memory.lifeCount['builder'];
     console.log('Spawning new builder: ' + newName);
-    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
+    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
         memory: {
           role: 'builder'
         }
@@ -71,7 +71,7 @@ module.exports.loop = function() {
   else if (upgraders.length < maxUpgraders) {
     var newName = 'U' + Memory.lifeCount['upgrader'];
     console.log('Spawning new upgraders: ' + newName);
-    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE], newName, {
+    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
         memory: {
           role: 'upgrader'
         }
