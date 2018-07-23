@@ -7,33 +7,51 @@ module.exports = {
     // let source = Pathfinder.search(creep.pos, goal);
     let sources = creep.room.find(FIND_SOURCES);
     var chosenSource;
-    for(var s in sources)
-    {
-      var nearByMiners = sources[s].pos.findInRange(FIND_MY_CREEPS, 1,
-      {filter: (c) => c.memory.role == 'miner' && c != creep});
+    var containerBySource;
+    for (var s in sources) {
+      var nearByMiners = sources[s].pos.findInRange(FIND_MY_CREEPS, 1, {
+        filter: (c) => c.memory.role == 'miner' && c != creep
+      });
+      //console.log("soureces: " + sources[s]);
 
-      if(nearByMiners.length == 0)
-      {
+      containerBySource = sources[s].pos.findInRange(FIND_STRUCTURES, 1, {
+        filter: {
+          structureType: STRUCTURE_CONTAINER
+        }
+      })
+
+      if (containerBySource.length == 0) {
+        continue;
+      }
+
+      if (nearByMiners.length == 0) {
         chosenSource = s;
         break;
       }
     }
 
-    console.log("chosensource: " + chosenSource);
+    //console.log("chosensource: " + chosenSource);
 
-    let container = sources[chosenSource].pos.findInRange(FIND_STRUCTURES, 1, {
-      filter: {
-        structureType: STRUCTURE_CONTAINER
-      }
-    })[0];
-    console.log("cont:" + container);
-    if (creep.pos.isEqualTo(container)) {
-      console.log("on container");
+    // if (chosenSource != undefined) {
+    //   let container = sources[chosenSource].pos.findInRange(FIND_STRUCTURES, 1, {
+    //     filter: {
+    //       structureType: STRUCTURE_CONTAINER
+    //     }
+    //   })[0];
+    // }
+
+    //console.log("cont:" + container);
+    if (creep.pos.isEqualTo(containerBySource[0])) {
+      //console.log("on container");
       var sourceToHarvest = creep.pos.findInRange(FIND_SOURCES, 1);
       creep.harvest(sourceToHarvest[0]);
     } else {
-      console.log("not on container")
-      creep.moveTo(container);
+      //console.log("not on container")
+      creep.moveTo(containerBySource[0], {
+        visualizePathStyle: {
+          stroke: '#ffaa00'
+        }
+      });
     }
   }
 };

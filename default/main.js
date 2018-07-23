@@ -3,7 +3,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleMiner = require('role.miner');
 
-// var units = ['harvester', 'upgrader', 'builder'];
+// var units = ['harvester', 'upgrader', 'builder', 'miner'];
 // Memory.lifeCount = {};
 // for(var unit in units)
 // {
@@ -27,9 +27,10 @@ module.exports.loop = function() {
   var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
   console.log('miner: ' + miners.length);
 
-  var maxHarvesters = 4;
+  var maxHarvesters = 5;
   var maxUpgraders = 5;
-  var maxBuilders = 5;
+  var maxBuilders = 6;
+  var maxMiners = 2;
 
   if (harvesters.length < maxHarvesters) {
     var newName = 'H' + Memory.lifeCount['harvester'];
@@ -64,17 +65,17 @@ module.exports.loop = function() {
       Memory.lifeCount['builder']++;
     }
   }
-  // else if (builders.length < maxBuilders) {
-  //   var newName = 'B' + Memory.lifeCount['builder'];
-  //   console.log('Spawning new builder: ' + newName);
-  //   if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
-  //       memory: {
-  //         role: 'builder'
-  //       }
-  //     }) == OK) {
-  //     Memory.lifeCount['builder']++;
-  //   }
-  // };
+  else if (miners.length < maxMiners) {
+    var newName = 'M' + Memory.lifeCount['miner'];
+    console.log('Spawning new miner: ' + newName);
+    if (Game.spawns['Spawn1'].spawnCreep([MOVE, WORK, WORK, WORK, WORK, WORK], newName, {
+        memory: {
+          role: 'miner'
+        }
+      }) == OK) {
+      Memory.lifeCount['miner']++;
+    }
+  };
 
   if (Game.spawns['Spawn1'].spawning) {
     var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];
@@ -92,7 +93,7 @@ module.exports.loop = function() {
     // var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     // if(creep.memory.role == 'builder')
     // {
-    //   if(harvesters.length < 5){
+    //   if(harvesters.length < 3){
     //     console.log("here");
     //     creep.memory.role = 'upgrader';
     //   }

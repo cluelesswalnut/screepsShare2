@@ -1,3 +1,6 @@
+require('role.testContiainerGrab')();
+var roleUpgrader = require('role.upgrader');
+
 var roleRepairer = {
 
     /** @param {Creep} creep **/
@@ -34,18 +37,19 @@ var roleRepairer = {
                     // if we can't fine one
                     else {
                         // look for construction sites
-                        //roleBuilder.run(creep);
+                        roleUpgrader.run(creep);
                     }
 	    }
 	    else {
-        var source = creep.pos.findClosestByPath(FIND_SOURCES);
-        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(source, {
-            visualizePathStyle: {
-              stroke: '#ffffff'
-            }
-          });
-        }
+        findEnergy(creep);
+        // var source = creep.pos.findClosestByPath(FIND_SOURCES);
+        // if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+        //   creep.moveTo(source, {
+        //     visualizePathStyle: {
+        //       stroke: '#ffffff'
+        //     }
+        //   });
+        // }
 	    }
 	}
 };

@@ -1,17 +1,20 @@
+require('role.testContiainerGrab')();
+
 var roleHarvester = {
 
   /** @param {Creep} creep **/
   run: function(creep) {
     if (creep.carry.energy < creep.carryCapacity) {
-      //            var sources = creep.room.find(FIND_SOURCES);
-      var source = creep.pos.findClosestByPath(FIND_SOURCES);
-      if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-        creep.moveTo(source, {
-          visualizePathStyle: {
-            stroke: '#ffaa00'
-          }
-        });
-      }
+      // var sources = creep.room.find(FIND_SOURCES);
+      // var source = creep.pos.findClosestByPath(FIND_SOURCES);
+      // if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+      //   creep.moveTo(source, {
+      //     visualizePathStyle: {
+      //       stroke: '#ffaa00'
+      //     }
+      //   });
+      // }
+      findEnergy(creep);
     } else {
       var myEnergyHolders = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
         filter: (mEH) => mEH.energy < mEH.energyCapacity

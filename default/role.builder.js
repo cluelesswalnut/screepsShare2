@@ -1,4 +1,5 @@
 var roleRepairer = require('role.repairer');
+require('role.testContiainerGrab')();
 
 var roleBuilder = {
 
@@ -15,10 +16,10 @@ var roleBuilder = {
 	    }
 
 	    if(creep.memory.building) {
-        var constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES,
-          {filter: {
-            structureType: STRUCTURE_CONTAINER
-          }});
+        var constructionSite = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
+          // {filter: {
+          //   structureType: STRUCTURE_CONTAINER
+          // }});
         if (constructionSite != undefined) {
           if (creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
             creep.moveTo(constructionSite, {
@@ -32,14 +33,15 @@ var roleBuilder = {
         }
 	    }
 	    else {
-        var source = creep.pos.findClosestByPath(FIND_SOURCES);
-        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-          creep.moveTo(source, {
-            visualizePathStyle: {
-              stroke: '#ffffff'
-            }
-          });
-        }
+        findEnergy(creep);
+        // var source = creep.pos.findClosestByPath(FIND_SOURCES);
+        // if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+        //   creep.moveTo(source, {
+        //     visualizePathStyle: {
+        //       stroke: '#ffffff'
+        //     }
+        //   });
+        // }
 	    }
 	}
 };
