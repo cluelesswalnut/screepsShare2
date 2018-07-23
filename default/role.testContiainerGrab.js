@@ -4,18 +4,28 @@ module.exports = function() {
     let sources = creep.room.find(FIND_SOURCES);
     var minerSum = 0;
     for (var s in sources) {
-      var nearByMiners = sources[s].pos.findInRange(FIND_MY_CREEPS, 1, {
-        filter: (c) => c.memory.role == 'miner'// && c != creep
+      var minersBySource = sources[s].pos.findInRange(FIND_MY_CREEPS, 1, {
+        filter: (c) => c.memory.role == 'miner' // && c != creep
       });
       minerSum = minerSum + nearByMiners.length;
     }
-    console.log("miner sum: " + minerSum)
+    //console.log("miner sum: " + minerSum)
     //var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
     //console.log('miner COUNT: ' + miners.length);
 
-    if (minerSum < 2) {
-      creep.moveTo(40,20);
-
+    if (minersBySource < 2) {
+      //if (creep.memory.role != 'harvester') {
+        //creep.moveTo(40, 20);
+        let sources = creep.room.find(FIND_SOURCES);
+        let source = creep.pos.findClosestByPath(FIND_SOURCES);
+        if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+          creep.moveTo(source, {
+            visualizePathStyle: {
+              stroke: '#ffaa00'
+            }
+          });
+        }
+      //}
     } else {
       var source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
         filter: {

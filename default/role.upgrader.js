@@ -24,25 +24,25 @@ var roleUpgrader = {
         });
       }
     } else {
-      findEnergy(creep);
-      // //var sources = creep.room.find(FIND_SOURCES);
-      // //if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-      // //creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
-      // var source = creep.pos.findClosestByPath(FIND_SOURCES);
-      //
-      // // let container = creep.room.find(FIND_STRUCTURES, 1, {
-      // //   filter: {
-      // //     structureType: STRUCTURE_CONTAINER
-      // //   }
-      // // })[0];
-      //
-      // if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-      //   creep.moveTo(source, {
-      //     visualizePathStyle: {
-      //       stroke: '#ffaa00'
-      //     }
-      //   });
-      // }
+      //findEnergy(creep);
+      //var sources = creep.room.find(FIND_SOURCES);
+      //if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
+      //creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+      var source = creep.pos.findClosestByPath(FIND_SOURCES);
+
+      // let container = creep.room.find(FIND_STRUCTURES, 1, {
+      //   filter: {
+      //     structureType: STRUCTURE_CONTAINER
+      //   }
+      // })[0];
+
+      if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(source, {
+          visualizePathStyle: {
+            stroke: '#ffaa00'
+          }
+        });
+      }
     }
   }
 };

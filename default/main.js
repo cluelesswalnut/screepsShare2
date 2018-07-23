@@ -30,7 +30,7 @@ module.exports.loop = function() {
   var maxHarvesters = 5;
   var maxUpgraders = 5;
   var maxBuilders = 6;
-  var maxMiners = 2;
+  var maxMiners = 0;
 
   if (miners.length < maxMiners) {
     var newName = 'M' + Memory.lifeCount['miner'];
