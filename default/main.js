@@ -32,7 +32,21 @@ module.exports.loop = function() {
   var maxBuilders = 6;
   var maxMiners = 2;
 
-  if (harvesters.length < maxHarvesters) {
+  if (miners.length < maxMiners) {
+    var newName = 'M' + Memory.lifeCount['miner'];
+    console.log('Spawning new miner: ' + newName);
+    if (Game.spawns['Spawn1'].spawnCreep([MOVE, WORK, WORK, WORK, WORK, WORK], newName, {
+        memory: {
+          role: 'miner'
+        }
+      }) == OK) {
+      Memory.lifeCount['miner']++;
+    }
+    else{
+
+    }
+  }
+  else if (harvesters.length < maxHarvesters) {
     var newName = 'H' + Memory.lifeCount['harvester'];
     console.log('Spawning new harvester: ' + newName);
     if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, MOVE, MOVE], newName, {
@@ -41,17 +55,6 @@ module.exports.loop = function() {
         }
       }) == OK) {
       Memory.lifeCount['harvester']++;
-    }
-  }
-  else if (upgraders.length < maxUpgraders) {
-    var newName = 'U' + Memory.lifeCount['upgrader'];
-    console.log('Spawning new upgraders: ' + newName);
-    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE], newName, {
-        memory: {
-          role: 'upgrader'
-        }
-      }) == OK) {
-      Memory.lifeCount['upgrader']++;
     }
   }
   else if (builders.length < maxBuilders) {
@@ -65,17 +68,19 @@ module.exports.loop = function() {
       Memory.lifeCount['builder']++;
     }
   }
-  else if (miners.length < maxMiners) {
-    var newName = 'M' + Memory.lifeCount['miner'];
-    console.log('Spawning new miner: ' + newName);
-    if (Game.spawns['Spawn1'].spawnCreep([MOVE, WORK, WORK, WORK, WORK, WORK], newName, {
+  else if (upgraders.length < maxUpgraders) {
+    var newName = 'U' + Memory.lifeCount['upgrader'];
+    console.log('Spawning new upgraders: ' + newName);
+    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE], newName, {
         memory: {
-          role: 'miner'
+          role: 'upgrader'
         }
       }) == OK) {
-      Memory.lifeCount['miner']++;
+      Memory.lifeCount['upgrader']++;
     }
-  };
+  }
+
+
 
   if (Game.spawns['Spawn1'].spawning) {
     var spawningCreep = Game.creeps[Game.spawns['Spawn1'].spawning.name];

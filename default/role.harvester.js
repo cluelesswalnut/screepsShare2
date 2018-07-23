@@ -1,10 +1,11 @@
 require('role.testContiainerGrab')();
+var roleUpgrader = require('role.upgrader');
 
 var roleHarvester = {
 
   /** @param {Creep} creep **/
   run: function(creep) {
-    if (creep.carry.energy < creep.carryCapacity) {
+    if (creep.carry.energy == 0 ){//}< creep.carryCapacity) {
       // var sources = creep.room.find(FIND_SOURCES);
       // var source = creep.pos.findClosestByPath(FIND_SOURCES);
       // if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
@@ -27,6 +28,9 @@ var roleHarvester = {
             }
           });
         }
+      }
+      else{
+        roleUpgrader.run(creep);
       }
 
 
