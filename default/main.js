@@ -2,6 +2,8 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleMiner = require('role.miner');
+var roleTower = require('role.tower');
+var testObj =  require('object.testObject');
 
 // var units = ['harvester', 'upgrader', 'builder', 'miner'];
 // Memory.lifeCount = {};
@@ -10,7 +12,17 @@ var roleMiner = require('role.miner');
 //   Memory.lifeCount[units[unit]] = 1;
 // }
 
+// var calc = new testObj(3,4);
+//
+// console.log("addition of operands is: " + calc.add());
+// console.log("subtraction of operands is: " + calc.subtract());
+// console.log("multiplication of operands is: " + calc.multiply());
+// console.log("quotient on dividing operands is: " + calc.divide());
+// console.log("remainder on dividing operands is: " + calc.remainder());
+
 module.exports.loop = function() {
+  // testObj.person('testName');
+  roleTower.operateTower(Game.spawns.Spawn1.room);
   for (var name in Memory.creeps) {
     if (!Game.creeps[name]) {
       delete Memory.creeps[name];
@@ -28,7 +40,7 @@ module.exports.loop = function() {
   console.log('miner: ' + miners.length);
 
   var maxHarvesters = 3;
-  var maxUpgraders = 5;
+  var maxUpgraders = 9;
   var maxBuilders = 3;
   var maxMiners = 2;
 
@@ -95,10 +107,10 @@ module.exports.loop = function() {
 
   for (var name in Game.creeps) {
     var creep = Game.creeps[name];
-    // var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
+    // var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     // if(creep.memory.role == 'builder')
     // {
-    //   if(harvesters.length < 3){
+    //   if(harvesters.length > 3){
     //     console.log("here");
     //     creep.memory.role = 'upgrader';
     //   }
