@@ -32,6 +32,16 @@ var roleHarvester = {
       var myEnergyHolders = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
         filter: (mEH) => mEH.energy < mEH.energyCapacity && mEH.structureType != STRUCTURE_CONTAINER && mEH.structureType != STRUCTURE_STORAGE
       });
+
+      var towers = creep.room.find(FIND_MY_STRUCTURES, {filter: (structure) => structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity });
+
+      if(towers.length != 0)
+      {
+        myEnergyHolders = towers[0];
+      }
+
+      console.log("priority: " + myEnergyHolders);
+
       if (myEnergyHolders != undefined) {
         if (creep.transfer(myEnergyHolders, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
           creep.moveTo(myEnergyHolders, {

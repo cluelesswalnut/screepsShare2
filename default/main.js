@@ -35,6 +35,17 @@ module.exports.loop = function() {
  // var testObj = new roomFarmer('E58S49', Game.spawns.Spawn1.room);
   // testObj.locateSources();
 
+var hostileCreeps = Game.spawns.Spawn1.room.find(FIND_HOSTILE_CREEPS, {filter: (c) => c.owner.username != 'LightLemmonDrop'});
+// console.log(hostileCreeps.length);
+if (hostileCreeps.length != 0) {
+  for (var name in Game.creeps) {
+    var creep = Game.creeps[name];
+    if (creep.memory.role != 'miner') {
+      creep.memory.role = 'harvester';
+    }
+  }
+}
+
   // testObj.person('testName');
   roleTower.operateTower(Game.spawns.Spawn1.room);
   for (var name in Memory.creeps) {
@@ -52,11 +63,17 @@ module.exports.loop = function() {
   console.log('builders: ' + builders.length);
   var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
   console.log('miner: ' + miners.length);
+  var fighter = _.filter(Game.creeps, (creep) => creep.memory.role == 'figher');
+  console.log('figher: ' + fighter.length);
+  var claimer = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
+  console.log('claimer: ' + claimer.length);
 
-  var maxHarvesters = 3;
-  var maxUpgraders = 9;
+
+  var maxHarvesters = 5;
+  var maxUpgraders = 7;
   var maxBuilders = 3;
   var maxMiners = 2;
+  var maxClaimers = 1;
 
   if (miners.length < maxMiners) {
     var newName = 'M' + Memory.lifeCount['miner'];
@@ -94,15 +111,26 @@ module.exports.loop = function() {
       Memory.lifeCount['builder']++;
     }
   }
-  else if (upgraders.length < maxUpgraders) {
-    var newName = 'U' + Memory.lifeCount['upgrader'];
-    console.log('Spawning new upgraders: ' + newName);
-    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
+  // else if (upgraders.length < maxUpgraders) {
+  //   var newName = 'U' + Memory.lifeCount['upgrader'];
+  //   console.log('Spawning new upgraders: ' + newName);
+  //   if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
+  //       memory: {
+  //         role: 'upgrader'
+  //       }
+  //     }) == OK) {
+  //     Memory.lifeCount['upgrader']++;
+  //   }
+  // }
+  else if (claimer.length < maxClaimers) {
+    var newName = 'U' + Memory.lifeCount['claimer'];
+    console.log('Spawning new claimer: ' + newName);
+    if (Game.spawns['Spawn1'].spawnCreep([CLAIM, MOVE, MOVE, MOVE, MOVE], newName, {
         memory: {
-          role: 'upgrader'
+          role: 'claimer'
         }
       }) == OK) {
-      Memory.lifeCount['upgrader']++;
+      Memory.lifeCount['claimer']++;
     }
   }
 
