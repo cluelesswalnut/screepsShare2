@@ -3,14 +3,16 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleMiner = require('role.miner');
 var roleTower = require('role.tower');
-var testObj =  require('object.testObject');
-
-// var units = ['harvester', 'upgrader', 'builder', 'miner'];
-// Memory.lifeCount = {};
-// for(var unit in units)
-// {
-//   Memory.lifeCount[units[unit]] = 1;
-// }
+var roomFarmer =  require('object.roomFarmer');
+// import 'object.roomFarmer';
+if (Memory.lifeCount == undefined){
+  var units = ['harvester', 'upgrader', 'builder', 'miner'];
+  Memory.lifeCount = {};
+  for(var unit in units)
+  {
+    Memory.lifeCount[units[unit]] = 1;
+  }
+}
 
 // var calc = new testObj(3,4);
 //
@@ -20,7 +22,19 @@ var testObj =  require('object.testObject');
 // console.log("quotient on dividing operands is: " + calc.divide());
 // console.log("remainder on dividing operands is: " + calc.remainder());
 
+
+
+// if(Memory.testObj == undefined)
+// {
+  // Memory.testObj = new roomFarmer('E57S49', Game.spawns.Spawn1.room);
+// }
+
 module.exports.loop = function() {
+
+// roomFarmer.locateSources(Memory.testObj);
+ // var testObj = new roomFarmer('E58S49', Game.spawns.Spawn1.room);
+  // testObj.locateSources();
+
   // testObj.person('testName');
   roleTower.operateTower(Game.spawns.Spawn1.room);
   for (var name in Memory.creeps) {
