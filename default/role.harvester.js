@@ -40,7 +40,7 @@ var roleHarvester = {
         myEnergyHolders = towers[0];
       }
 
-      console.log("priority: " + myEnergyHolders);
+      // console.log("priority: " + myEnergyHolders);
 
       if (myEnergyHolders != undefined) {
         if (creep.transfer(myEnergyHolders, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
