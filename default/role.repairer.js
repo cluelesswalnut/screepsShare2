@@ -3,7 +3,7 @@ var roleUpgrader = require('role.upgrader');
 
 var roleRepairer = {
 
-  wallHP: 5000,
+  wallHP: 10000,
   repairRatio: 0.9,
 
   /** @param {Creep} creep **/

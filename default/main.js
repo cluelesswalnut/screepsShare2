@@ -40,9 +40,9 @@ if (Memory.lifeCount == undefined){
 module.exports.loop = function() {
 
 // roomFarmer.locateSources(Memory.testObj);
- var testObj = new roomFarmer('E56S49', Game.spawns.Spawn1.room);
-testObj.locateSources();
-console.log("csout: " + testObj.scout);
+//  var testObj = new roomFarmer('E56S49', Game.spawns.Spawn1.room);
+// testObj.locateSources();
+// console.log("csout: " + testObj.scout);
 
 var hostileCreeps = Game.spawns.Spawn1.room.find(FIND_HOSTILE_CREEPS, {filter: (c) => c.owner.username != 'LightLemmonDrop'});
 // console.log(hostileCreeps.length);
