@@ -9,7 +9,7 @@ module.exports = {
     // tower.attack(hostileCreeps[0]);
     for(c in hostileCreeps)
     {
-      if(hostileCreeps[c].owner.username != 'LightLemmonDrop')
+      if(hostileCreeps[c].owner.username != 'LightLemmonDrop' && hostileCreeps[c].owner.username != 'LoveL')
       {
         towers.forEach(tower => tower.attack(hostileCreeps[c]));
       }

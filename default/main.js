@@ -27,7 +27,7 @@ if (Memory.lifeCount == undefined){
 // console.log("addition of operands is: " + calc.add());
 // console.log("subtraction of operands is: " + calc.subtract());
 // console.log("multiplication of operands is: " + calc.multiply());
-// console.log("quotient on dividing operands is: " + calc.divide());
+// console.log("quotient on dividing operands is: "  + calc.divide());
 // console.log("remainder on dividing operands is: " + calc.remainder());
 
 
@@ -42,14 +42,15 @@ module.exports.loop = function() {
 // roomFarmer.locateSources(Memory.testObj);
 //  var testObj = new roomFarmer('E56S49', Game.spawns.Spawn1.room);
 // testObj.locateSources();
+// testObj.operateMiner();
 // console.log("csout: " + testObj.scout);
 
-var hostileCreeps = Game.spawns.Spawn1.room.find(FIND_HOSTILE_CREEPS, {filter: (c) => c.owner.username != 'LightLemmonDrop'});
+var hostileCreeps = Game.spawns.Spawn1.room.find(FIND_HOSTILE_CREEPS, {filter: (c) => c.owner.username != 'LightLemmonDrop' && c.owner.username != 'LoveL'});
 // console.log(hostileCreeps.length);
 if (hostileCreeps.length != 0) {
   for (var name in Game.creeps) {
     var creep = Game.creeps[name];
-    if (creep.memory.role != 'miner') {
+    if (creep.memory.role === 'upgrader' || creep.memory.role === 'builder') {
       creep.memory.role = 'harvester';
     }
   }

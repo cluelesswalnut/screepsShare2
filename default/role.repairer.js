@@ -1,6 +1,8 @@
 require('role.testContiainerGrab')();
 var roleUpgrader = require('role.upgrader');
 
+// need to update to only repair significant damage. And when it repairs, repari it fully.
+
 var roleRepairer = {
 
   wallHP: 10000,
