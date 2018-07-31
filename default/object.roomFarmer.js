@@ -7,6 +7,8 @@
 // import {myMiner} from './role.minerFunc.js';
 
 var myMiner = require('role.minerFunc');
+var myBuilder = require('role.builderFunc');
+var myHauler = require('role.haulerFunc');
 
 
 function RoomFarmer(roomName, controlRoom) {
@@ -27,7 +29,7 @@ RoomFarmer.prototype.locateSources = function() {
   this.scout = Game.creeps[scoutName];
   if (this.scout == undefined) {
     // console.log("spawn: " + this.spawn);
-    console.log(this.spawn.spawnCreep([MOVE, MOVE, MOVE, WORK, WORK, WORK, CARRY, CARRY, CARRY], scoutName, {
+    console.log(this.spawn.spawnCreep([MOVE, WORK, CARRY], scoutName, {
       memory: {
         role: 'roomBuilder'
       }
@@ -40,9 +42,14 @@ RoomFarmer.prototype.locateSources = function() {
 		}else
 		{
 			this.sources = this.scout.room.find(FIND_SOURCES);
-			// var newRoom = new RoomPosition(this.sources[0].pos.x, this.sources[0].pos.y, this.roomName);
-			var newRoom = new RoomPosition(38, 17, this.roomName);
-			this.scout.moveTo(newRoom);
+			var newRoom = new RoomPosition(this.sources[0].pos.x, this.sources[0].pos.y, this.roomName);
+			// var newRoom = new RoomPosition(38, 17, this.roomName);
+      // var newRoom = new RoomPosition(25, 25, this.roomName);
+
+			// this.scout.moveTo(newRoom);
+      this.myBuilder = new myBuilder(this.scout, this.roomName);
+      this.myBuilder.maintainRoom();
+      this.scout.moveTo(newRoom);
 		}
 	}
 }
@@ -51,7 +58,10 @@ RoomFarmer.prototype.operateMiner = function() {
 	// let minerName = "roomMiner" + this.roomName;
 	this.miners = [];
 	this.myMiners = [];
-	this.sources.forEach((source)=>{
+  this.sources = Game.rooms[this.roomName].find(FIND_SOURCES);
+  console.log(this.sources);
+  if(this.sources != undefined)
+{	this.sources.forEach((source)=>{
 		let minerName = "miner" + source.id;
 		let miner = Game.creeps[minerName];
 
@@ -80,7 +90,80 @@ RoomFarmer.prototype.operateMiner = function() {
 			this.myMiners.push(new myMiner(miner, Game.getObjectById(sourceId)));
 			this.myMiners[this.myMiners.length - 1].mineSource();
 		}
-	});
+	});}
+
+  RoomFarmer.prototype.operateHauler = function() {
+    this.haulers = [];
+    this.myHaulers = [];
+    this.containers = Game.rooms[this.roomName].find(FIND_STRUCTURES, {
+      filter: (mEH) =>  mEH.structureType == STRUCTURE_CONTAINER
+    })
+
+    if(this.containers != undefined){
+      this.containers.forEach((container)=>{
+        let haulerName = "roomHauler1" + container.id;
+          this.hauler = Game.creeps[haulerName];
+          if (this.hauler == undefined) {
+            // console.log("spawn: " + this.spawn);
+            console.log(this.spawn.spawnCreep([MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY], haulerName, {
+              memory: {
+                role: 'roomHauler'
+              }
+            }));
+      }
+      else{
+        this.haulers.push(this.hauler);
+      }
+      let haulerName2 = "roomHauler2" + container.id;
+        this.hauler2 = Game.creeps[haulerName2];
+        if (this.hauler2 == undefined) {
+          // console.log("spawn: " + this.spawn);
+          console.log(this.spawn.spawnCreep([MOVE,MOVE,MOVE,MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY], haulerName2, {
+            memory: {
+              role: 'roomHauler'
+            }
+          }));
+        }
+        else{
+          this.haulers.push(this.hauler2);
+        }
+    });
+
+this.haulers.forEach((hauler)=>{
+  let containerID = hauler.name.slice(11, hauler.name.length);
+  let container = Game.getObjectById(containerID);
+  let store = this.controlRoom.storage;
+  this.myHaulers.push(new myHauler(hauler, container,store ));
+  this.myHaulers[this.myHaulers.length - 1].haul();
+})
+
+  }
+}
+  //   let haulterName = "roomHauler" + this.roomName;
+  //   this.hauler = Game.creeps[haulterName];
+  //   if (this.hauler == undefined) {
+  //     // console.log("spawn: " + this.spawn);
+  //     console.log(this.spawn.spawnCreep([MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, MOVE, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY, CARRY], haulterName, {
+  //       memory: {
+  //         role: 'roomHauler'
+  //       }
+  //     }));
+  //   } else {
+  // 		//Go the the middle of the room or the source
+  // 		if (this.scout.room.name != this.roomName) {
+  // 			var newRoom = new RoomPosition(25, 25, this.roomName);
+  // 			this.scout.moveTo(newRoom);
+  // 		}else
+  // 		{
+  // 			this.sources = this.scout.room.find(FIND_SOURCES);
+  // 			// var newRoom = new RoomPosition(this.sources[0].pos.x, this.sources[0].pos.y, this.roomName);
+  // 			var newRoom = new RoomPosition(38, 17, this.roomName);
+  // 			// this.scout.moveTo(newRoom);
+  //       this.myBuilder = new myBuilder(this.scout, this.roomName);
+  //       this.myBuilder.maintainRoom();
+  // 		}
+  // 	}
+  // }
 
 }
 

@@ -21,6 +21,21 @@ var roleRepairer = {
     }
 
     if (creep.memory.building) {
+
+      //repair walls
+      var wall = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+        filter: (s) => (s.structureType == STRUCTURE_WALL || s.structureType == STRUCTURE_RAMPART) && s.hits < this.wallHP
+      });
+      console.log("wall: " + wall);
+      if (wall != undefined) {
+        if (creep.repair(wall) == ERR_NOT_IN_RANGE) {
+          // move towards it
+          creep.moveTo(wall);
+        }
+      }
+        else{
+
+      
       // find closest structure with less than max hits
       // Exclude walls because they have way too many max hits and would keep
       // our repairers busy forever. We have to find a solution for that later.
@@ -39,19 +54,20 @@ var roleRepairer = {
           creep.moveTo(structure);
         }
       }
+    else{
       // if we can't fine one
-      else {
-        //repair walls
-        var wall = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-          filter: (s) => (s.structureType == STRUCTURE_WALL || s.structureType == STRUCTURE_RAMPART) && s.hits < this.wallHP
-        });
-        console.log("wall: " + wall);
-        if (wall != undefined) {
-          if (creep.repair(wall) == ERR_NOT_IN_RANGE) {
-            // move towards it
-            creep.moveTo(wall);
-          }
-        } else {
+      // else {
+      //   //repair walls
+      //   var wall = creep.pos.findClosestByPath(FIND_STRUCTURES, {
+      //     filter: (s) => (s.structureType == STRUCTURE_WALL || s.structureType == STRUCTURE_RAMPART) && s.hits < this.wallHP
+      //   });
+      //   console.log("wall: " + wall);
+      //   if (wall != undefined) {
+      //     if (creep.repair(wall) == ERR_NOT_IN_RANGE) {
+      //       // move towards it
+      //       creep.moveTo(wall);
+      //     }
+      //   } else {
 
           // look for construction sites
           roleUpgrader.run(creep);

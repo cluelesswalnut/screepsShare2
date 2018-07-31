@@ -19,7 +19,7 @@ class myMiner {
         filter: (struct) => struct.structureType == STRUCTURE_CONTAINER
       });
       if (closeContainers.length == 0 && closeConstructionSites.length == 0) {
-        this.creep.room.createConstructionSite(creep.pos, STRUCTURE_CONTAINER);
+        this.creep.room.createConstructionSite(this.creep.pos, STRUCTURE_CONTAINER);
       } else if (closeContainers.legnth > 0) {
         this.creep.moveTo(closeContainers[0].pos);
       }

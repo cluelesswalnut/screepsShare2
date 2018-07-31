@@ -39,11 +39,32 @@ if (Memory.lifeCount == undefined){
 
 module.exports.loop = function() {
 
-// roomFarmer.locateSources(Memory.testObj);
-//  var testObj = new roomFarmer('E56S49', Game.spawns.Spawn1.room);
-// testObj.locateSources();
-// testObj.operateMiner();
-// console.log("csout: " + testObj.scout);
+  try{
+    // roomFarmer.locateSources(Memory.testObj);
+     var testObj = new roomFarmer('E56S49', Game.spawns.Spawn1.room);
+    testObj.locateSources();
+    testObj.operateMiner();
+    testObj.operateHauler();
+    console.log("csout: " + testObj.scout);
+  }
+  catch(error)
+  {
+    console.log("crash");
+  }
+
+  try{
+    // roomFarmer.locateSources(Memory.testObj);
+     var testObj2 = new roomFarmer('E55S49', Game.spawns.Spawn1.room);
+    testObj2.locateSources();
+    testObj2.operateMiner();
+    testObj2.operateHauler();
+    // console.log("csout: " + testObj2.scout);
+  }
+  catch(error)
+  {
+    console.log("crash room 2");
+  }
+
 
 var hostileCreeps = Game.spawns.Spawn1.room.find(FIND_HOSTILE_CREEPS, {filter: (c) => c.owner.username != 'LightLemmonDrop' && c.owner.username != 'LoveL'});
 // console.log(hostileCreeps.length);
@@ -79,8 +100,8 @@ if (hostileCreeps.length != 0) {
   console.log('claimer: ' + claimer.length);
 
 
-  var maxHarvesters = 5;
-  var maxUpgraders = 7;
+  var maxHarvesters = 6;
+  var maxUpgraders = 6;
   var maxBuilders = 3;
   var maxMiners = 2;
   var maxClaimers = 0;
@@ -187,4 +208,5 @@ if (hostileCreeps.length != 0) {
     }
 
   };
+
 }
