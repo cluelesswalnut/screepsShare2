@@ -4,7 +4,7 @@ class myBuilder {
     this.assignedRoom = assignedRoom;
   }
 
-  maintainRoom() {
+  maintainRoom(defaultLocation) {
     if (this.creep.memory.building && this.creep.carry.energy == 0) {
       this.creep.memory.building = false;
       this.creep.say('harvest');
@@ -16,7 +16,7 @@ class myBuilder {
 
     if (this.creep.memory.building) {
       console.log("building");
-      var constructionSite = this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES)//, {
+      var constructionSite = this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);//, {
       //   filter: (cs) => {
       //     cs.room.name +'' == ''+this.assignedRoom
       //   }
@@ -33,13 +33,16 @@ class myBuilder {
         }
       } else {
         var structure = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
-          filter: (s) => s.hits < s.hitsMax && s.room.name == this.assignedRoom
+          filter: (s) => s.hits < s.hitsMax //&& s.room.name == this.assignedRoom
         });
 
         if (structure != undefined) {
           if (this.creep.repair(structure) == ERR_NOT_IN_RANGE) {
             this.creep.moveTo(structure);
           }
+        }
+        else{
+          this.creep.moveTo(defaultLocation);
         }
       }
     } else {
@@ -82,6 +85,9 @@ class myBuilder {
           }
         });
       }
+    }
+    else{
+      this.creep.moveTo(defaultLocation);
     }
     }
   }

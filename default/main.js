@@ -39,31 +39,39 @@ if (Memory.lifeCount == undefined){
 
 module.exports.loop = function() {
 
-  try{
+  var spawn = Game.spawns['Spawn1'];
+  console.log(spawn);
+  if (spawn.hits <= 4000) {
+    spawn.room.controller.activateSafeMode();
+  }
+
+  // try{
     // roomFarmer.locateSources(Memory.testObj);
      var testObj = new roomFarmer('E56S49', Game.spawns.Spawn1.room);
     testObj.locateSources();
-    testObj.operateMiner();
-    testObj.operateHauler();
+    // testObj.operateMiner();
+    // testObj.operateHauler();
+    // testObj.reserveRoom();
     console.log("csout: " + testObj.scout);
-  }
-  catch(error)
-  {
-    console.log("crash");
-  }
-
-  try{
-    // roomFarmer.locateSources(Memory.testObj);
-     var testObj2 = new roomFarmer('E55S49', Game.spawns.Spawn1.room);
-    testObj2.locateSources();
-    testObj2.operateMiner();
-    testObj2.operateHauler();
-    // console.log("csout: " + testObj2.scout);
-  }
-  catch(error)
-  {
-    console.log("crash room 2");
-  }
+  // }
+  // catch(error)
+  // {
+  //   console.log("crash");
+  // }
+  //
+  // try{
+  //   // roomFarmer.locateSources(Memory.testObj);
+  //    var testObj2 = new roomFarmer('E55S49', Game.spawns.Spawn1.room);
+  //   testObj2.locateSources();
+  //   testObj2.operateMiner();
+  //   testObj2.operateHauler();
+  //   testObj2.reserveRoom();
+  //   // console.log("csout: " + testObj2.scout);
+  // }
+  // catch(error)
+  // {
+  //   console.log("crash room 2");
+  // }
 
 
 var hostileCreeps = Game.spawns.Spawn1.room.find(FIND_HOSTILE_CREEPS, {filter: (c) => c.owner.username != 'LightLemmonDrop' && c.owner.username != 'LoveL'});
