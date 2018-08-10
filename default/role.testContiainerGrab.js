@@ -21,7 +21,7 @@ module.exports = function() {
       let minerNextToYou = creep.pos.findInRange(FIND_MY_CREEPS, 1, {
         filter: (c) => c.memory.role == 'miner' // && c != creep
       });
-      console.log("miner Next: " + minerNextToYou.length);
+      // console.log("miner Next: " + minerNextToYou.length);
       if(minerNextToYou.length > 0)
       {
         creep.moveTo(33,33)

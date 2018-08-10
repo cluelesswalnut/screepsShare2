@@ -5,6 +5,10 @@ var roleMiner = require('role.miner');
 var roleTower = require('role.tower');
 var roomFarmer =  require('object.roomFarmer');
 require('role.claimer')();
+var HarvesterCreep = require('class.HarvesterCreep')
+var BuilderCreep = require('class.BuilderCreep')
+var UpgraderCreep = require('class.UpgraderCreep')
+var MinerCreep = require('class.MinerCreep')
 
 // module.exports = {
 //   myFunc: () => { //stuff  },
@@ -40,11 +44,17 @@ if (Memory.lifeCount == undefined){
 module.exports.loop = function() {
 
   var spawn = Game.spawns['Spawn1'];
-  console.log(spawn);
   if (spawn.hits <= 4000) {
     spawn.room.controller.activateSafeMode();
   }
 
+try{
+// var myHarv = new HarvesterCreep('h1', Game.spawns.Spawn1.room, [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]);
+// myHarv.harvest();
+}
+catch(error){
+  console.log("fail");
+}
   // try{
     // roomFarmer.locateSources(Memory.testObj);
      var testObj = new roomFarmer('E56S49', Game.spawns.Spawn1.room);
@@ -52,7 +62,6 @@ module.exports.loop = function() {
     // testObj.operateMiner();
     // testObj.operateHauler();
     // testObj.reserveRoom();
-    console.log("csout: " + testObj.scout);
   // }
   // catch(error)
   // {
@@ -95,28 +104,40 @@ if (hostileCreeps.length != 0) {
   }
 
   var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-  console.log('Harvesters: ' + harvesters.length);
+  // console.log('Harvesters: ' + harvesters.length);
   var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
-  console.log('Upgraders: ' + upgraders.length);
+  // console.log('Upgraders: ' + upgraders.length);
   var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
-  console.log('builders: ' + builders.length);
+  // console.log('builders: ' + builders.length);
   var miners = _.filter(Game.creeps, (creep) => creep.memory.role == 'miner');
-  console.log('miner: ' + miners.length);
+  // console.log('miner: ' + miners.length);
   var fighter = _.filter(Game.creeps, (creep) => creep.memory.role == 'figher');
-  console.log('figher: ' + fighter.length);
+  // console.log('figher: ' + fighter.length);
   var claimer = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
-  console.log('claimer: ' + claimer.length);
+  // console.log('claimer: ' + claimer.length);
+  console.log('Harvesters: ' + harvesters.length + '; Upgraders: ' + upgraders.length + '; Builders: ' + builders.length + '; Miners: ' + miners.length + '; Claimers: ' + claimer.length);
 
 
-  var maxHarvesters = 6;
-  var maxUpgraders = 6;
-  var maxBuilders = 3;
+  var maxHarvesters = 3;
+  var maxUpgraders = 5;
+  var maxBuilders = 5;
   var maxMiners = 2;
   var maxClaimers = 0;
+
+  // for(let i = 0; i < maxHarvesters; ++i){
+  //   var myCreep = new HarvesterCreep('h'+i, Game.spawns.Spawn1.room, [WORK, CARRY, MOVE]);
+  //   myCreep.harvest();
+  // }
+  //
+  // for(let i = 0; i < maxUpgraders; ++i){
+  //   var myCreep = new UpgraderCreep('U'+i, Game.spawns.Spawn1.room, [WORK, CARRY, MOVE]);
+  //   myCreep.upgrade();
+  // }
 
   if (miners.length < maxMiners) {
     var newName = 'M' + Memory.lifeCount['miner'];
     console.log('Spawning new miner: ' + newName);
+    // if (Game.spawns['Spawn1'].spawnCreep([MOVE, WORK, WORK, WORK, WORK, WORK], newName, {
     if (Game.spawns['Spawn1'].spawnCreep([MOVE, WORK, WORK, WORK, WORK, WORK], newName, {
         memory: {
           role: 'miner'
@@ -131,7 +152,8 @@ if (hostileCreeps.length != 0) {
   else if (harvesters.length < maxHarvesters) {
     var newName = 'H' + Memory.lifeCount['harvester'];
     console.log('Spawning new harvester: ' + newName);
-    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
+    // if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
+    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], newName, {
         memory: {
           role: 'harvester'
         }
@@ -142,7 +164,8 @@ if (hostileCreeps.length != 0) {
   else if (builders.length < maxBuilders) {
     var newName = 'B' + Memory.lifeCount['builder'];
     console.log('Spawning new builder: ' + newName);
-    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
+    // if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
+    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], newName, {
         memory: {
           role: 'builder'
         }
@@ -153,7 +176,8 @@ if (hostileCreeps.length != 0) {
   else if (upgraders.length < maxUpgraders) {
     var newName = 'U' + Memory.lifeCount['upgrader'];
     console.log('Spawning new upgraders: ' + newName);
-    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
+    // if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE], newName, {
+    if (Game.spawns['Spawn1'].spawnCreep([WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, MOVE], newName, {
         memory: {
           role: 'upgrader'
         }
@@ -164,6 +188,7 @@ if (hostileCreeps.length != 0) {
   else if (claimer.length < maxClaimers) {
     var newName = 'U' + Memory.lifeCount['claimer'];
     console.log('Spawning new claimer: ' + newName);
+    // if (Game.spawns['Spawn1'].spawnCreep([CLAIM, MOVE, MOVE, MOVE, MOVE], newName, {
     if (Game.spawns['Spawn1'].spawnCreep([CLAIM, MOVE, MOVE, MOVE, MOVE], newName, {
         memory: {
           role: 'claimer'

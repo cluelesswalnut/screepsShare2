@@ -1,7 +1,10 @@
+require('role.testContiainerGrab')();
+
 class BaseCreep{
   constructor(name, homeRoom, bodyParts){
     this.name = name;
     this.homeRoom = homeRoom;
+    this.spawn = homeRoom.find(FIND_MY_SPAWNS)[0];
 
 		this.creep = Game.creeps[name];
 		if (this.creep == undefined) {
@@ -22,6 +25,10 @@ class BaseCreep{
     }
   }
 
+  findEnergy(){
+    findEnergy(this.creep);
+  }
+
 }
 
-export default BaseCreep;
+module.exports = BaseCreep;
