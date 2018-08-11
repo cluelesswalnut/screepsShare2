@@ -3,11 +3,15 @@ var BaseCreep = require('class.BaseCreep')
 require('role.testContiainerGrab')();
 
 class BuilderCreep extends BaseCreep{
-	constructor(name, homeRoom, body){
-		super(name, homeRoom, body);
+	constructor(name, homeRoom, body, respawn){
+		super(name, homeRoom, body, respawn);
 	}
 
-	build(){
+	work(){
+    // check if the creep exists
+    if(!this.exists())
+      return
+
     if(this.creep.memory.building && this.creep.carry.energy == 0) {
           this.creep.memory.building = false;
           this.creep.say('harvest');
@@ -28,7 +32,7 @@ class BuilderCreep extends BaseCreep{
           });
         }
       } else {
-        roleRepairer.run(creep);
+        this.repair();
       }
     }
     else {
@@ -43,7 +47,6 @@ repair(){
     var wall = this.creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (s) => (s.structureType == STRUCTURE_WALL || s.structureType == STRUCTURE_RAMPART) && s.hits < this.wallHP
     });
-    console.log("wall: " + wall);
     if (wall != undefined) {
       if (this.creep.repair(wall) == ERR_NOT_IN_RANGE) {
         // move towards it
@@ -60,7 +63,7 @@ repair(){
       // the second argument for findClosestByPath is an object which takes
       // a property called filter which can be a function
       // we use the arrow operator to define it
-      filter: (s) => s.hits < s.hitsMax * this.repairRatio && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART
+      filter: (s) => s.hits < s.hitsMax && s.structureType != STRUCTURE_WALL && s.structureType != STRUCTURE_RAMPART
     });
 
     // if we find one
@@ -87,7 +90,7 @@ repair(){
     //   } else {
 
         // look for construction sites
-        roleUpgrader.run(creep);
+        roleUpgrader.run(this.creep);
       }
     }
   } else {

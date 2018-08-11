@@ -3,13 +3,14 @@ var BaseCreep = require('class.BaseCreep')
 require('role.testContiainerGrab')();
 
 class UpgraderCreep extends BaseCreep{
-	constructor(name, homeRoom, body){
-		super(name, homeRoom, body);
+	constructor(name, homeRoom, body, respawn){
+		super(name, homeRoom, body, respawn);
 	}
 
-	upgrade(){
-    if(this.creep == undefined)
-      return 
+	work(){
+    // check if the creep exists
+    if(!this.exists())
+      return
 
     if (this.creep.memory.upgrading && this.creep.carry.energy == 0) {
       this.creep.memory.upgrading = false;

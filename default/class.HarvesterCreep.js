@@ -6,10 +6,12 @@ class HarvesterCreep extends BaseCreep{
 		super(name, homeRoom, body);
 	}
 
-	harvest(){
+	work(){
 		// check if the creep exists
-		if(this.creep == undefined)
-			return
+		if(!this.exists())
+		{
+			return;
+		}
 		// can make this a function on BaseCreep?? maybe not
 		// can make it a function somewhere though and add more complex logic to check if
 		// it is worth it to grab/deposit energy b4 moving
@@ -24,7 +26,6 @@ class HarvesterCreep extends BaseCreep{
 
 
 		if (!this.creep.memory.storing) {
-		  // this.creep.findEnergy();
 			this.findEnergy();
 		} else {
 		  var myEnergyHolders = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {

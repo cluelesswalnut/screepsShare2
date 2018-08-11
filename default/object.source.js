@@ -1,5 +1,5 @@
 // class to represent a source
-class mySource{
+class MySource{
   constructor(room, x, y, id){
     this.room = room;
     this.x = x;
@@ -20,4 +20,4 @@ class mySource{
 
 }
 
-module.exports = mySource;
+module.exports = MySource;
