@@ -1,0 +1,20 @@
+var roomClaimer = new ClaimerCreep('c0', Game.rooms['E52S43'], 'E53S44', [CLAIM, MOVE], false);
+roomClaimer.work();
+
+var roomAttacker = new AttackerCreep('a0', Game.rooms['E52S43'], 'E53S44', [ATTACK, ATTACK, ATTACK, MOVE, MOVE, MOVE], false);
+roomAttacker.work();
+
+
+for(let i = 2; i < 5; i++){
+  let roomWorker = new RoomBuilderCreep('r'+i, Game.rooms['E52S43'], 'E53S44', [WORK, MOVE, CARRY,WORK, MOVE, CARRY,WORK, MOVE, CARRY,WORK, MOVE, CARRY]);
+  roomWorker.buildRoom();
+}
+
+// Game.rooms['E53S44'].createConstructionSite(new RoomPosition(22, 22, 'E53S44'), STRUCTURE_SPAWN);
+
+if(Game.rooms['E53S44'].energyCapacityAvailable < 550){
+  for(let i = 2; i < 4; i++){
+    let roomWorker = new RoomBuilderCreep('r'+i, Game.rooms['E52S43'], 'E53S44', [WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE, MOVE, MOVE], true);
+    roomWorker.buildRoom();
+  }
+}

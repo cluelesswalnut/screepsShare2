@@ -1,6 +1,17 @@
 module.exports = function() {
 
   findEnergy = function(creep) {
+    // find container or raw raw energy or tombstone?  probably store in the room object which containers are sources
+    // go get energy from there
+
+    // if none of those exist get harvest energy manually
+    //needs to have work parts for this
+
+    // if a miner is trying to get to the source get out of the way
+  }
+
+
+  findEnergy2 = function(creep) {
     var rawEnergy = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 2);
     if(rawEnergy.length > 0)
     {
@@ -100,38 +111,3 @@ module.exports = function() {
     }
   }
 }
-
-
-//
-//   /** @param {Creep} creep **/
-//   run: function(creep) {
-//     if (creep.carry.energy < creep.carryCapacity) {
-//       //            var sources = creep.room.find(FIND_SOURCES);
-//       var source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-//         filter: {
-//           structureType: STRUCTURE_CONTAINER
-//         }
-//       });
-//       if (creep.withdraw(source, RESOURCE_ENERGY, creep.carryCapacity) == ERR_NOT_IN_RANGE) {
-//         creep.moveTo(source, {
-//           visualizePathStyle: {
-//             stroke: '#ffaa00'
-//           }
-//         });
-//       }
-//     } else {
-//       var myEnergyHolders = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-//         filter: (mEH) => mEH.energy < mEH.energyCapacity
-//       });
-//       if (myEnergyHolders != undefined) {
-//         if (creep.transfer(myEnergyHolders, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-//           creep.moveTo(myEnergyHolders, {
-//             visualizePathStyle: {
-//               stroke: '#ffaa00'
-//             }
-//           });
-//         }
-//       }
-// }
-// }
-// }

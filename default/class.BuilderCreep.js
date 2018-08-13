@@ -75,34 +75,12 @@ repair(){
       }
     }
   else{
-    // if we can't fine one
-    // else {
-    //   //repair walls
-    //   var wall = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-    //     filter: (s) => (s.structureType == STRUCTURE_WALL || s.structureType == STRUCTURE_RAMPART) && s.hits < this.wallHP
-    //   });
-    //   console.log("wall: " + wall);
-    //   if (wall != undefined) {
-    //     if (creep.repair(wall) == ERR_NOT_IN_RANGE) {
-    //       // move towards it
-    //       creep.moveTo(wall);
-    //     }
-    //   } else {
-
-        // look for construction sites
         roleUpgrader.run(this.creep);
       }
     }
   } else {
     this.findEnergy();
-    // var source = creep.pos.findClosestByPath(FIND_SOURCES);
-    // if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-    //   creep.moveTo(source, {
-    //     visualizePathStyle: {
-    //       stroke: '#ffffff'
-    //     }
-    //   });
-    // }
+
   }
 }
 

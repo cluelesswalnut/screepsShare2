@@ -2,8 +2,8 @@ var roleUpgrader = require('role.upgrader');
 var BaseCreep = require('class.BaseCreep')
 
 class HarvesterCreep extends BaseCreep{
-	constructor(name, homeRoom, body){
-		super(name, homeRoom, body);
+	constructor(name, homeRoom, body, respawn){
+		super(name, homeRoom, body, respawn);
 	}
 
 	work(){
@@ -28,29 +28,33 @@ class HarvesterCreep extends BaseCreep{
 		if (!this.creep.memory.storing) {
 			this.findEnergy();
 		} else {
-		  var myEnergyHolders = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-			filter: (mEH) => mEH.energy < mEH.energyCapacity && mEH.structureType != STRUCTURE_CONTAINER && mEH.structureType != STRUCTURE_STORAGE
-		  });
+			this.storeEnergy();
+		}
+	}
 
-		  var towers = this.creep.room.find(FIND_MY_STRUCTURES, {filter: (structure) => structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity });
+	storeEnergy(){
+		var myEnergyHolders = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
+		filter: (mEH) => mEH.energy < mEH.energyCapacity && mEH.structureType != STRUCTURE_CONTAINER && mEH.structureType != STRUCTURE_STORAGE
+		});
 
-		  if(towers.length != 0)
-		  {
-			myEnergyHolders = towers[0];
-		  }
+		var towers = this.creep.room.find(FIND_MY_STRUCTURES, {filter: (structure) => structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity });
 
-		  if (myEnergyHolders != undefined) {
-			if (this.creep.transfer(myEnergyHolders, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-			  this.creep.moveTo(myEnergyHolders, {
-				visualizePathStyle: {
-				  stroke: '#ffaa00'
-				}
-			  });
+		if(towers.length != 0)
+		{
+		myEnergyHolders = towers[0];
+		}
+
+		if (myEnergyHolders != undefined) {
+		if (this.creep.transfer(myEnergyHolders, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+			this.creep.moveTo(myEnergyHolders, {
+			visualizePathStyle: {
+				stroke: '#ffaa00'
 			}
-		  }
-		  else{
-			roleUpgrader.run(this.creep);
-		  }
+			});
+		}
+		}
+		else{
+		roleUpgrader.run(this.creep);
 		}
 	}
 }

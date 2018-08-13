@@ -15,6 +15,10 @@ class BaseCreep{
         });
       this.creep = Game.creeps[name];
     }
+
+    if(this.creep != undefined){
+      this.creep.memory.inUse = Game.time;
+    }
   }
 
   // add function to determine best body composition
@@ -42,6 +46,14 @@ class BaseCreep{
 
   findEnergy(){
     findEnergy(this.creep);
+  }
+
+  repairRoadsAsYouGo(){
+    var structures = this.creep.pos.findInRange(FIND_STRUCTURES, 1, {
+      filter: (s) => s.structureType == STRUCTURE_ROAD && s.hits < s.hitsMax
+    });
+    structures.sort((a,b)=>{return a.hits < b.hits});
+    this.creep.repair(structures[0]);
   }
 
 }

@@ -11,7 +11,9 @@ var RoomBuilderCreep = require('class.RoomBuilderCreep')
 var UpgraderCreep = require('class.UpgraderCreep')
 var MinerCreep = require('class.MinerCreep')
 var ClaimerCreep = require('class.ClaimerCreep')
+var AttackerCreep = require('class.AttackerCreep')
 var MyRoom = require('class.MyRoom')
+var HelperFunctions = require('function.HelperFunctions')
 
 // module.exports = {
 //   myFunc: () => { //stuff  },
@@ -84,14 +86,30 @@ catch(error){
   // {
   //   console.log("crash room 2");
   // }
+// Game.rooms['E53S44'].createConstructionSite(new RoomPosition(22, 22, 'E53S44'), STRUCTURE_SPAWN);
 
+  var roomClaimer = new ClaimerCreep('c0', Game.rooms['E52S43'], 'E53S44', [CLAIM, MOVE], false);
+  roomClaimer.work();
+
+  var roomAttacker = new AttackerCreep('a0', Game.rooms['E52S43'], 'E53S44', [ATTACK, ATTACK, ATTACK, MOVE, MOVE, MOVE], false);
+  roomAttacker.work();
+
+if(Game.rooms['E53S44'].energyCapacityAvailable < 550){
+  for(let i = 2; i < 4; i++){
+    let roomWorker = new RoomBuilderCreep('r'+i, Game.rooms['E52S43'], 'E53S44', [WORK,WORK,WORK,WORK,WORK,CARRY,MOVE,MOVE,MOVE, MOVE, MOVE], true);
+    roomWorker.buildRoom();
+  }
+}
 
 // test room Object
 var myRoom2 = new MyRoom('E52S41');
-myRoom2.operate()
+myRoom2.operate();
 
 var myRoom = new MyRoom('E52S43');
-myRoom.operate()
+myRoom.operate();
+
+var myRoom3 = new MyRoom('E53S44');
+myRoom3.operate();
 
 
 var hostileCreeps = Game.spawns.Spawn1.room.find(FIND_HOSTILE_CREEPS, {filter: (c) => c.owner.username != 'LightLemmonDrop' && c.owner.username != 'LoveL'});
@@ -113,5 +131,7 @@ if (hostileCreeps.length != 0) {
       console.log('Clearing non-existing creep memory:', name);
     }
   }
+
+  HelperFunctions.recycleCreeps();
 
 }

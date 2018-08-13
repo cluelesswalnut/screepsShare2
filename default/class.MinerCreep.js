@@ -64,6 +64,7 @@ class MinerCreep extends BaseCreep {
       } else if (gameContainers[0].hitsMax > gameContainers[0].hits) {
         this.creep.repair(gameContainers[0]);
       }
+      // this.creep.harvest(gameSource);
     }
   }
 

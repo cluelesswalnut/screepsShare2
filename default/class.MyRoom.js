@@ -14,6 +14,20 @@ class MyRoom{
       this.sources = MinerCreep.findSources(this.room);
     }
     this.spawn = this.room.find(FIND_MY_SPAWNS)[0];
+    // use more creeps if the containers in the room are full. Meaning enough energy isnt being used
+    if (Memory[this.name+'ExtraUpgraders'] == undefined) {
+      Memory[this.name+'ExtraUpgraders'] = 0;
+    }
+    if(Game.time % 100 == 0){
+      let fullContainers = this.room.find(FIND_STRUCTURES, {
+        filter: (mEH) =>  mEH.structureType == STRUCTURE_CONTAINER && mEH.store[RESOURCE_ENERGY] == mEH.storeCapacity
+      });
+      fullContainers.forEach(()=>{Memory[this.name+'ExtraUpgraders']++;})
+      if(Memory[this.name+'ExtraUpgraders'] > 3){
+        Memory[this.name+'ExtraUpgraders'] = 3;
+      }
+    }
+
   }
 
   operate(){
@@ -39,9 +53,9 @@ this.annotateSpawner();
     let bodySetsNeeded = 12;
 
     // find how many of each creep is needed based on the body size
-    var maxHarvesters = Math.min(6, 12 / bodyPartSets) + 2;
-    var maxUpgraders = Math.min(6, 12 / bodyPartSets);
-    var maxBuilders = Math.min(6, 12 / bodyPartSets);
+    var maxHarvesters = Math.min(8, 12 / bodyPartSets) + Memory[this.name+'ExtraUpgraders'];
+    var maxUpgraders = Math.min(8, 12 / bodyPartSets);// + Memory[this.name+'ExtraUpgraders'];
+    var maxBuilders = Math.min(8, 12 / bodyPartSets);
     var maxMiners = this.room.energyCapacityAvailable >= 550 ? this.sources.length : 0;
     var maxClaimers = 0;
 
@@ -51,11 +65,6 @@ this.annotateSpawner();
 // spawn and operate creeps
   runCreeps(){
     let specs = this.findCreepSpecs();
-
-    // console.log(specs.maxMiners)
-    // console.log(specs.maxBuilders)
-    // console.log(specs.maxHarvesters)
-    // console.log(specs.maxUpgraders)
 
     var miners = _.filter(Game.creeps, (creep) => creep.name.substr(creep.name.length - 6) == this.name && creep.name[0] == 'm');
     let sources = MinerCreep.findSources(this.room);
