@@ -4,8 +4,13 @@ var RoomBuilderCreep = require('class.RoomBuilderCreep')
 var UpgraderCreep = require('class.UpgraderCreep')
 var MinerCreep = require('class.MinerCreep')
 var ClaimerCreep = require('class.ClaimerCreep')
-// class to represent a room
+var roleTower = require('role.tower');
 
+
+// add a tracker for how much energy is being processed
+
+
+// class to represent a room
 class MyRoom{
   constructor(name, sources){
     this.name = name;
@@ -18,27 +23,86 @@ class MyRoom{
     if (Memory[this.name+'ExtraUpgraders'] == undefined) {
       Memory[this.name+'ExtraUpgraders'] = 0;
     }
-    if(Game.time % 100 == 0){
+    if(Game.time % 200 == 0){
       let fullContainers = this.room.find(FIND_STRUCTURES, {
         filter: (mEH) =>  mEH.structureType == STRUCTURE_CONTAINER && mEH.store[RESOURCE_ENERGY] == mEH.storeCapacity
       });
       fullContainers.forEach(()=>{Memory[this.name+'ExtraUpgraders']++;})
-      if(Memory[this.name+'ExtraUpgraders'] > 3){
-        Memory[this.name+'ExtraUpgraders'] = 3;
+      if(Memory[this.name+'ExtraUpgraders'] > 6){
+        Memory[this.name+'ExtraUpgraders'] = 6;
       }
+    }
+
+    if(Game.time % 28800 == 0){
+      Memory[this.name+'ExtraUpgraders'] = 0;
     }
 
   }
 
   operate(){
+
+    if (this.spawn.hits <= 4000) {
+      this.spawn.room.controller.activateSafeMode();
+    }
+
     let numCreeps = this.countCreeps();
-    if(numCreeps <= 1){
+    if(numCreeps <= 3){
       var myCreep = new HarvesterCreep('h0-'+this.name, this.room, [WORK, MOVE, CARRY]);
       myCreep.work();
     }
 
 this.runCreeps();
 this.annotateSpawner();
+
+roleTower.operateTower(this.room);
+
+this.countEnergy();
+
+  }
+
+  countEnergy(){
+    // initialize counters
+    if(this.room.memory.energyUpgraded == undefined){
+      this.room.memory.energyUpgraded = 0;
+      this.room.memory.ticks = 0;
+    }
+
+    // find how much the upgrader progess has increased since last tick
+    let progress = this.room.controller.progress;
+    let increaseThisTick = progress - this.room.memory.progressLastTick;
+
+    // if the increase was non-negative, increment the increase
+    if(increaseThisTick >= 0){
+      this.room.memory.energyUpgraded += increaseThisTick;
+      this.room.memory.ticks++;
+
+    }
+    //set the progress for the last tick
+    this.room.memory.progressLastTick = progress;
+
+    // every day rest the progress of the rooms at the same time
+    if(Game.time % 28800 == 0){
+      this.room.memory.progressAtLastDay = progress;
+    }
+    // 
+    // // initialize counters
+    // if(this.room.memory.energySpent == undefined){
+    //   this.room.memory.energySpent = 0;
+    // }
+    //
+    // // find how much the upgrader progess has increased since last tick
+    // let progress = this.spawn.energy;
+    // let increaseThisTick = progress - this.room.memory.progressLastTick;
+    //
+    // // if the increase was non-negative, increment the increase
+    // if(increaseThisTick >= 0){
+    //   this.room.memory.energyUpgraded += increaseThisTick;
+    //   this.room.memory.ticks++;
+    //
+    // }
+    // //set the progress for the last tick
+    // this.room.memory.progressLastTick = progress;
+
   }
 
 // find what body parts creeps should have
@@ -55,7 +119,8 @@ this.annotateSpawner();
     // find how many of each creep is needed based on the body size
     var maxHarvesters = Math.min(8, 12 / bodyPartSets) + Memory[this.name+'ExtraUpgraders'];
     var maxUpgraders = Math.min(8, 12 / bodyPartSets);// + Memory[this.name+'ExtraUpgraders'];
-    var maxBuilders = Math.min(8, 12 / bodyPartSets);
+    // var maxBuilders = Math.min(8, 12 / bodyPartSets);
+    var maxBuilders = 1;
     var maxMiners = this.room.energyCapacityAvailable >= 550 ? this.sources.length : 0;
     var maxClaimers = 0;
 
@@ -104,7 +169,8 @@ this.annotateSpawner();
     var miners = _.filter(Game.creeps, (creep) => creep.name.substr(creep.name.length - 6) == this.name && creep.name[0] == 'm');
     var fighter = _.filter(Game.creeps, (creep) => creep.memory.role == 'figher');
     var claimer = _.filter(Game.creeps, (creep) => creep.memory.role == 'claimer');
-    console.log(this.name + ': Harvesters: ' + harvesters.length + '; Upgraders: ' + upgraders.length + '; Builders: ' + builders.length + '; Miners: ' + miners.length + '; Claimers: ' + claimer.length);
+    let EPT = this.room.memory.energyUpgraded / this.room.memory.ticks;
+    console.log(this.name + ' EPT: ' + EPT  + ': Harvesters: ' + harvesters.length + '; Upgraders: ' + upgraders.length + '; Builders: ' + builders.length + '; Miners: ' + miners.length + '; Claimers: ' + claimer.length);
     return harvesters.length + upgraders.length + builders.length + miners.length;
   }
 
