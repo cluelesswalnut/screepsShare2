@@ -37,6 +37,8 @@ class MyRoom{
       Memory[this.name+'ExtraUpgraders'] = 0;
     }
 
+    this.locateAvaliableEnergy();
+
   }
 
   operate(){
@@ -56,11 +58,11 @@ this.annotateSpawner();
 
 roleTower.operateTower(this.room);
 
-this.countEnergy();
+this.countEnergyUsed();
 
   }
 
-  countEnergy(){
+  countEnergyUsed(){
     // initialize counters
     if(this.room.memory.energyUpgraded == undefined){
       this.room.memory.energyUpgraded = 0;
@@ -84,24 +86,22 @@ this.countEnergy();
     if(Game.time % 28800 == 0){
       this.room.memory.progressAtLastDay = progress;
     }
-    // 
-    // // initialize counters
-    // if(this.room.memory.energySpent == undefined){
-    //   this.room.memory.energySpent = 0;
-    // }
-    //
-    // // find how much the upgrader progess has increased since last tick
-    // let progress = this.spawn.energy;
-    // let increaseThisTick = progress - this.room.memory.progressLastTick;
-    //
-    // // if the increase was non-negative, increment the increase
-    // if(increaseThisTick >= 0){
-    //   this.room.memory.energyUpgraded += increaseThisTick;
-    //   this.room.memory.ticks++;
-    //
-    // }
-    // //set the progress for the last tick
-    // this.room.memory.progressLastTick = progress;
+
+    // initialize counters for spawn energy spent
+    if(this.room.memory.energySpent == undefined){
+      this.room.memory.energySpent = 0;
+    }
+
+    // find how much energy was spent this tick
+    let energyInSpawn = this.room.energyAvailable;
+    let energySpent = this.room.memory.energyInSpawnLastTick - energyInSpawn;
+
+    // increment the count of energy spent
+    if(energySpent > 0){
+      this.room.memory.energySpent += energySpent + 1;
+    }
+    //set the energy held for the current tick
+    this.room.memory.energyInSpawnLastTick = energyInSpawn;
 
   }
 
@@ -119,8 +119,9 @@ this.countEnergy();
     // find how many of each creep is needed based on the body size
     var maxHarvesters = Math.min(8, 12 / bodyPartSets) + Memory[this.name+'ExtraUpgraders'];
     var maxUpgraders = Math.min(8, 12 / bodyPartSets);// + Memory[this.name+'ExtraUpgraders'];
+    let constructionSites = this.room.find(FIND_MY_CONSTRUCTION_SITES);
     // var maxBuilders = Math.min(8, 12 / bodyPartSets);
-    var maxBuilders = 1;
+    var maxBuilders = constructionSites.length > 0 ? Math.min(8, 12 / bodyPartSets) : 1;
     var maxMiners = this.room.energyCapacityAvailable >= 550 ? this.sources.length : 0;
     var maxClaimers = 0;
 
@@ -185,6 +186,42 @@ this.countEnergy();
           opacity: 0.8
         });
     };
+  }
+
+  // private find the energy sources avaliable in the rooms
+  locateAvaliableEnergy(){
+    // raw energy
+    let rawEnergy = {};
+    this.room.find(FIND_DROPPED_RESOURCES, {
+      filter: (drop) =>  drop.resourceType == RESOURCE_ENERGY
+    }).forEach(drop => rawEnergy[drop.id] = drop.amount);
+    // tombstones
+    let tombstones = {};
+    this.room.find(FIND_TOMBSTONES, {
+      filter: (stone)=> stone.store[RESOURCE_ENERGY] > 0
+    }).forEach(stone => tombstones[stone.id] = stone.store[RESOURCE_ENERGY]);
+    // containers
+    let containers = {};
+    this.room.find(FIND_STRUCTURES, {
+      filter: (container) =>  container.structureType == STRUCTURE_CONTAINER && container.store[RESOURCE_ENERGY] > 0
+    }).forEach(container => containers[container.id] = container.store[RESOURCE_ENERGY]);
+    // links
+    let links = {};
+    this.room.find(FIND_MY_STRUCTURES, {
+      filter: (link) =>  link.structureType == STRUCTURE_LINK && link.energy > 0
+    }).forEach(link => links[link.id] = link.energy);
+
+    // save the avaliable energy to memory
+    let energyObject = {
+      rawEnergy: rawEnergy,
+      tombstones: tombstones,
+      containers: containers,
+      links: links
+    }
+
+    // store in the room's Memory
+    this.room.memory.energyObject = energyObject;
+
   }
 
 }

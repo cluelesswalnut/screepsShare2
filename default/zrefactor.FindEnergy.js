@@ -64,21 +64,24 @@ module.exports = function() {
       //     structureType: STRUCTURE_CONTAINER
       //   }
       // });
+      // creep.memory.source = undefined
+      if(creep.memory.source == undefined){
       var source = creep.pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
         filter: (drop) =>  drop.resourceType == RESOURCE_ENERGY && drop.amount > 200 && drop.room.name == creep.room.name
       });
 
 
-      if (source != undefined){
-        creep.moveTo(source.pos);
-        creep.pickup(source);
-        return;
-      }
+      // if (source != undefined){
+      //   creep.moveTo(source.pos);
+      //   creep.pickup(source);
+      //   return;
+      // }
 
-
+      if(source == undefined){
         var source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
           filter: (mEH) =>  mEH.structureType == STRUCTURE_CONTAINER && mEH.store[RESOURCE_ENERGY] > 500
         });
+      }
 
       if(source == undefined){
         var source = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -97,17 +100,42 @@ module.exports = function() {
           return;
         }
       }
+      if(source != undefined){
+        creep.memory.source = source.id;
+      }
+    }
+
+    var source = Game.getObjectById(creep.memory.source);
+    // if(source == undefined || Game.time % 50 == 0){
+    if(source == undefined || Game.time % 100 == 0){
+      creep.memory.source = undefined;
+      return;
+    }
 
       //console.log(creep.name + " cont source: " + source);
       var rawEnergy = creep.pos.findInRange(FIND_DROPPED_RESOURCES, 1);
       creep.pickup(rawEnergy[0]);
-      if (creep.withdraw(source, RESOURCE_ENERGY, creep.carryCapacity - creep.energy) == ERR_NOT_IN_RANGE) {
+      // console.log(creep.withdraw(source, RESOURCE_ENERGY, creep.carryCapacity - creep.energy))
+      var result = creep.withdraw(source, RESOURCE_ENERGY, creep.carryCapacity - creep.energy);
+      if (result == ERR_NOT_IN_RANGE) {
         creep.moveTo(source, {
           visualizePathStyle: {
             stroke: '#ffaa00'
           }
         });
+      }else if(result == ERR_INVALID_TARGET){
+          // console.log(source + ' ' + creep.name);
+          creep.moveTo(source.pos);
+          if(creep.pickup(source) == OK){
+            creep.memory.source = undefined;
+          }
       }
+      else if(result == OK){
+        creep.memory.source = undefined;
+      }
+
+
+
     }
   }
 }

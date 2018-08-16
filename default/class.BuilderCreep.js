@@ -22,6 +22,7 @@ class BuilderCreep extends BaseCreep{
     }
 
     if(this.creep.memory.building) {
+			// this.repair();
       var constructionSite = this.creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES);
       if (constructionSite != undefined) {
         if (this.creep.build(constructionSite) == ERR_NOT_IN_RANGE) {
