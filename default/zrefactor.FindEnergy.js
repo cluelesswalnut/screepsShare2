@@ -1,13 +1,43 @@
 module.exports = function() {
 
   findEnergy = function(creep) {
-    // find container or raw raw energy or tombstone?  probably store in the room object which containers are sources
-    // go get energy from there
 
-    // if none of those exist get harvest energy manually
-    //needs to have work parts for this
+    findClosestEnergySource = function(object){
+      let minDistance = 1000;
+      var target = undefined;
+      for (let property in object) {
+        if (object.hasOwnProperty(property)) {
+          let energySource = Game.getObjectById(property);
+          let distanceToResource = PathFinder.search(creep.pos, energySource).path.length;
+          if(distanceToResource < minDistance){
+            minDistance = distanceToResource;
+            target = energySource;
+          }
+        }
+      }
+      return target;
+    }
 
-    // if a miner is trying to get to the source get out of the way
+    //PathFinder.search(Game.getObjectById('5b6cd5bf0fa21e7cf0bd192e').pos, Game.getObjectById('59f1a68a82100e1594f40231')).path.length
+
+    // let energyObject = {
+    //   rawEnergy: rawEnergy,
+    //   tombstones: tombstones,
+    //   containers: containers,
+    //   links: links
+    // }
+
+    var target = undefined;
+    var energyObject = creep.room.memory.energyObject;
+    // first look for rawEnergy
+    let rawEnergy = energyObject['rawEnergy'];
+    target = findClosestEnergySource(rawEnergy);
+    // next look for tombstones
+    let tombstones = energyObject['tombstones'];
+    target = findClosestEnergySource(tombstones);
+    // next look for containers
+    let containers = energyObject['containers'];
+    target = findClosestEnergySource(containers);
   }
 
 
