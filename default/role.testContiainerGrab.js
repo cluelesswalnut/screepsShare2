@@ -1,20 +1,31 @@
 module.exports = function() {
 
   findEnergy = function(creep){
+  //   if(creep.name == 'h7-E52S43'){
+  //   return;
+  // }
   findClosestEnergySource = function(object){
+
+
     let maxDistanceRatio = 0;
     var target = undefined;
     for (let energySourceProperty in object) {
       if (object.hasOwnProperty(energySourceProperty) && object[energySourceProperty] > 0) {
         let energySource = Game.getObjectById(energySourceProperty);
         let distanceToResource = PathFinder.search(creep.pos, energySource).path.length;
-        let ratio = object[energySourceProperty] *  object[energySourceProperty]/ distanceToResource;
+        let ratio = object[energySourceProperty] / distanceToResource; //*  object[energySourceProperty]
+        // if(creep.name == 'h4-E53S44'){
+        //   console.log(creep.name + ' ' + creep.pos + ' ' + energySourceProperty + " " + distanceToResource + ' ' + object[energySourceProperty] + ' ' +ratio)
+        // }
         if(ratio > maxDistanceRatio){
           maxDistanceRatio = ratio;
           target = energySource;
         }
       }
     }
+  //   if(creep.name == 'h4-E53S44'){
+  //   console.log('targ' +target)
+  // }
     return target;
   }
 
@@ -32,37 +43,80 @@ module.exports = function() {
   var energyObject = creep.room.memory.energyObject;
   // first look for rawEnergy
   if(target == undefined){
+  //   if(creep.name == 'h4-E53S44'){
+  //   console.log('rawEnergy')
+  // }
     let rawEnergyProperty = 'rawEnergy';
     let rawEnergy = energyObject[rawEnergyProperty];
     target = findClosestEnergySource(rawEnergy);
     if(target != undefined){
       creep.room.memory.energyObject[rawEnergyProperty][target.id] -= creepRemainingCapacity;
+      let moveTo = PathFinder.search(creep.pos, target).path[0];
+      // creep.moveTo(moveTo);
+      // why does this try to take a different path??????
       creep.moveTo(target);
       creep.pickup(target);
     }
   }
   // next look for tombstones
+//   if(creep.name == 'h4-E53S44'){
+//   console.log(target)
+// }
   if(target == undefined){
+  //   if(creep.name == 'h4-E53S44'){
+  //   console.log('tombstones')
+  // }
     let tombstomeProperty = 'tombstones';
     let tombstones = energyObject[tombstomeProperty];
     target = findClosestEnergySource(tombstones);
     if(target != undefined){
       creep.room.memory.energyObject[tombstomeProperty][target.id] -= creepRemainingCapacity;
+      let moveTo = PathFinder.search(creep.pos, target).path[0];
+      // creep.moveTo(moveTo);
       creep.moveTo(target);
       creep.withdraw(target, RESOURCE_ENERGY);
     }
   }
   // next look for containers
   if(target == undefined){
+  //   if(creep.name == 'h4-E53S44'){
+  //   console.log('containers')
+  // }
     let containerProperty = 'containers';
     let containers = energyObject[containerProperty];
     target = findClosestEnergySource(containers);
     if(target != undefined){
       creep.room.memory.energyObject[containerProperty][target.id] -= creepRemainingCapacity;
+      let moveTo = PathFinder.search(creep.pos, target).path[0];
+    //   if(creep.name == 'h4-E53S44'){
+    //   console.log(creep.moveTo(moveTo))
+    // }
       creep.moveTo(target);
       creep.withdraw(target, RESOURCE_ENERGY);
     }
   }
+
+  if(target == undefined)
+  {
+    let minerNextToYou = creep.pos.findInRange(FIND_MY_CREEPS, 1, {
+      filter: (c) => c.memory.role == 'm' // && c != creep
+    });
+    // console.log("miner Next: " + minerNextToYou.length);
+    if(minerNextToYou.length > 0)
+    {
+      creep.moveTo(33,33)
+    }else{
+    let source = creep.pos.findClosestByPath(FIND_SOURCES, {filter: (s) => {return s.energy > 0;} });
+    if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+      creep.moveTo(source, {
+        visualizePathStyle: {
+          stroke: '#ffaa00'
+        }
+      });
+    }
+  }
+}
+
 }
 
   // findEnergy2: function(creep) {

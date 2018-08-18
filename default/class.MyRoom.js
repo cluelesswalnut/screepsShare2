@@ -24,13 +24,25 @@ class MyRoom{
     if (Memory[this.name+'ExtraUpgraders'] == undefined) {
       Memory[this.name+'ExtraUpgraders'] = 0;
     }
+
+    this.locateAvaliableEnergy();
+
     if(Game.time % 200 == 0){
       let fullContainers = this.room.find(FIND_STRUCTURES, {
         filter: (mEH) =>  mEH.structureType == STRUCTURE_CONTAINER && mEH.store[RESOURCE_ENERGY] == mEH.storeCapacity
       });
+      let emptyContainers = this.room.find(FIND_STRUCTURES, {
+        filter: (mEH) =>  mEH.structureType == STRUCTURE_CONTAINER && mEH.store[RESOURCE_ENERGY] < 500
+      });
       fullContainers.forEach(()=>{Memory[this.name+'ExtraUpgraders']++;})
       if(Memory[this.name+'ExtraUpgraders'] > 6){
         Memory[this.name+'ExtraUpgraders'] = 6;
+      }
+      if(fullContainers.length == 0 && emptyContainers.length > 0){
+        Memory[this.name+'ExtraUpgraders']--;
+      }
+      if(Memory[this.name+'ExtraUpgraders'] < 0){
+        Memory[this.name+'ExtraUpgraders'] = 0;
       }
     }
 
@@ -38,8 +50,30 @@ class MyRoom{
       Memory[this.name+'ExtraUpgraders'] = 0;
     }
 
-    this.locateAvaliableEnergy();
+    // if(this.room.name == 'E52S43'){
+    var controllerLink = this.room.controller.pos.findInRange(FIND_STRUCTURES, 4, {
+      filter: (struct) => struct.structureType == STRUCTURE_LINK
+    })[0];
 
+    let storage = this.room.storage;
+    if(storage != undefined){
+      var spawnLink = this.room.storage.pos.findInRange(FIND_STRUCTURES, 4, {
+        filter: (struct) => struct.structureType == STRUCTURE_LINK
+      })[0];
+
+      if(spawnLink != undefined && controllerLink != undefined){
+        if(this.room.name != 'E53S44'){
+          this.DesignatedUpgrader = true;
+        }
+        if(spawnLink.energy == spawnLink.energyCapacity && controllerLink.energy < 50){
+          console.log(spawnLink)
+          console.log(controllerLink)
+          spawnLink.transferEnergy(controllerLink);
+        }
+    }
+
+    // }
+  }
   }
 
   operate(){
@@ -70,6 +104,7 @@ if(this.room.storage != undefined){
       filter: (struct) => struct.structureType == STRUCTURE_LINK
     });
 }
+
 
   }
 
@@ -129,7 +164,7 @@ if(this.room.storage != undefined){
 
     // find how many of each creep is needed based on the body size
     var maxHarvesters = Math.min(8, 12 / bodyPartSets) + Memory[this.name+'ExtraUpgraders'];
-    var maxUpgraders = Math.min(8, 12 / bodyPartSets);// + Memory[this.name+'ExtraUpgraders'];
+    var maxUpgraders = this.DesignatedUpgrader ? 0 : Math.min(8, 12 / bodyPartSets);// + Memory[this.name+'ExtraUpgraders'];
     let constructionSites = this.room.find(FIND_MY_CONSTRUCTION_SITES);
     // var maxBuilders = Math.min(8, 12 / bodyPartSets);
     var maxBuilders = constructionSites.length > 0 ? Math.min(8, 12 / bodyPartSets) : 1;
@@ -143,7 +178,6 @@ if(this.room.storage != undefined){
 // spawn and operate creeps
   runCreeps(){
     let specs = this.findCreepSpecs();
-
     var miners = _.filter(Game.creeps, (creep) => creep.name.substr(creep.name.length - 6) == this.name && creep.name[0] == 'm');
     let sources = MinerCreep.findSources(this.room);
     // if only level 2 controller miner cant have a carry part
@@ -168,17 +202,40 @@ if(this.room.storage != undefined){
     }
 
     for(let i = 0; i < specs.maxHarvesters; ++i){
-      var myCreep = new HarvesterCreep('h'+i+'-'+this.name, this.room, specs.balanceBody, spawn);
+      let base = [CARRY, CARRY, MOVE];
+      let baseCost = 150;
+      // minus 50 to account for the 1 work and 1 move part needed
+      let parts = Math.floor(this.room.energyCapacityAvailable - 150 / 250);
+      let maxPartsNeeded = 10;
+      let body = [WORK, MOVE];
+      for (let i = 0; i < parts && i < maxPartsNeeded; ++i){
+        body = body.concat(base);
+      }
+      if(this.DesignatedUpgrader){
+        var myCreep = new HarvesterCreep('h'+i+'-'+this.name, this.room, body, spawn);
+      }else{
+        var myCreep = new HarvesterCreep('h'+i+'-'+this.name, this.room, specs.balanceBody, spawn);
+      }
       myCreep.work();
     }
 
     // if(this.name == 'E52S43'){
-    //   for(let i = 0; i < 1; ++i){
-    //     var myCreep = new DesignatedUpgraderCreep('d'+i+'-'+this.name, this.room, [WORK,WORK,WORK,MOVE,MOVE,MOVE,CARRY], spawn);
-    //     // var myCreep = new DesignatedUpgraderCreep('d'+i+'-'+this.name, this.room, [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY], spawn);
-    //     myCreep.work();
-    //   }
-    // }
+    if(this.DesignatedUpgrader == true){
+      let base = [WORK, WORK, MOVE];
+      let baseCost = 250;
+      // minus 50 to account for the 1 carry part needed
+      let parts = Math.floor(this.room.energyCapacityAvailable - 50 / 250);
+      let maxPartsNeeded = 7;
+      let body = [CARRY];
+      for (let i = 0; i < parts && i < maxPartsNeeded; ++i){
+        body = body.concat(base);
+      }
+      for(let i = 0; i < 1; ++i){
+        var myCreep = new DesignatedUpgraderCreep('d'+i+'-'+this.name, this.room, body, spawn);
+        // var myCreep = new DesignatedUpgraderCreep('d'+i+'-'+this.name, this.room, [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY], spawn);
+        myCreep.work();
+      }
+    }
   }
 
   countCreeps(){
@@ -222,7 +279,7 @@ if(this.room.storage != undefined){
     // containers
     let containers = {};
     this.room.find(FIND_STRUCTURES, {
-      filter: (container) =>  container.structureType == STRUCTURE_CONTAINER && container.store[RESOURCE_ENERGY] > 0
+      filter: (container) =>  container.structureType == STRUCTURE_CONTAINER && container.store[RESOURCE_ENERGY] > 0 && !container.pos.inRangeTo(this.room.controller, 4)
     }).forEach(container => containers[container.id] = container.store[RESOURCE_ENERGY]);
     // links
     let links = {};

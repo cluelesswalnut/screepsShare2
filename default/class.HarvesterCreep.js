@@ -37,15 +37,26 @@ class HarvesterCreep extends BaseCreep{
 
 	storeEnergy(){
 		var myEnergyHolders = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-		filter: (mEH) => mEH.energy < mEH.energyCapacity && mEH.structureType != STRUCTURE_CONTAINER && mEH.structureType != STRUCTURE_STORAGE && mEH.structureType != STRUCTURE_TOWER
+		filter: (mEH) => mEH.energy < mEH.energyCapacity && mEH.structureType != STRUCTURE_CONTAINER && mEH.structureType != STRUCTURE_STORAGE && mEH.structureType != STRUCTURE_TOWER && mEH.structureType != STRUCTURE_LINK
 		});
 
 		var towers = this.creep.room.find(FIND_MY_STRUCTURES, {filter: (structure) => structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity });
 
 		let myCreeps = this.creep.room.find(FIND_MY_CREEPS);
-		if(towers.length != 0 && myCreeps.length > 3)
+		if(towers.length != 0 && myCreeps.length > 4)
 		{
 		myEnergyHolders = towers[0];
+		}
+
+		if(this.creep.room.storage != undefined){
+			var spawnLink = this.creep.room.storage.pos.findInRange(FIND_STRUCTURES, 4, {
+				filter: (struct) => struct.structureType == STRUCTURE_LINK && struct.energy < struct.energyCapacity
+			});
+			// this 4 might need to change
+			if(spawnLink.length != 0 && myCreeps.length > 4)
+			{
+			myEnergyHolders = spawnLink[0];
+			}
 		}
 
 		if (myEnergyHolders != undefined) {
