@@ -4,6 +4,7 @@ var RoomBuilderCreep = require('class.RoomBuilderCreep')
 var UpgraderCreep = require('class.UpgraderCreep')
 var MinerCreep = require('class.MinerCreep')
 var ClaimerCreep = require('class.ClaimerCreep')
+var DesignatedUpgraderCreep = require('class.DesignatedUpgraderCreep')
 var roleTower = require('role.tower');
 
 
@@ -59,6 +60,16 @@ this.annotateSpawner();
 roleTower.operateTower(this.room);
 
 this.countEnergyUsed();
+
+var controllerLink = this.room.controller.pos.findInRange(FIND_STRUCTURES, 4, {
+  filter: (struct) => struct.structureType == STRUCTURE_LINK
+});
+
+if(this.room.storage != undefined){
+    var storageLink = this.room.storage.pos.findInRange(FIND_STRUCTURES, 4, {
+      filter: (struct) => struct.structureType == STRUCTURE_LINK
+    });
+}
 
   }
 
@@ -123,6 +134,7 @@ this.countEnergyUsed();
     // var maxBuilders = Math.min(8, 12 / bodyPartSets);
     var maxBuilders = constructionSites.length > 0 ? Math.min(8, 12 / bodyPartSets) : 1;
     var maxMiners = this.room.energyCapacityAvailable >= 550 ? this.sources.length : 0;
+    var maxDesignatedUpgraderCreep = 1;
     var maxClaimers = 0;
 
     return {balanceBody: balanceBody, maxHarvesters: maxHarvesters, maxUpgraders: maxUpgraders, maxBuilders: maxBuilders, maxMiners: maxMiners, maxClaimers: maxClaimers}
@@ -160,6 +172,13 @@ this.countEnergyUsed();
       myCreep.work();
     }
 
+    // if(this.name == 'E52S43'){
+    //   for(let i = 0; i < 1; ++i){
+    //     var myCreep = new DesignatedUpgraderCreep('d'+i+'-'+this.name, this.room, [WORK,WORK,WORK,MOVE,MOVE,MOVE,CARRY], spawn);
+    //     // var myCreep = new DesignatedUpgraderCreep('d'+i+'-'+this.name, this.room, [WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,WORK,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,CARRY], spawn);
+    //     myCreep.work();
+    //   }
+    // }
   }
 
   countCreeps(){

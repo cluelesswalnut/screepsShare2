@@ -5,9 +5,9 @@ module.exports = function() {
     findClosestEnergySource = function(object){
       let minDistance = 1000;
       var target = undefined;
-      for (let property in object) {
-        if (object.hasOwnProperty(property)) {
-          let energySource = Game.getObjectById(property);
+      for (let energySourceProperty in object) {
+        if (object.hasOwnProperty(energySourceProperty) && object[energySourceProperty] > 0) {
+          let energySource = Game.getObjectById(energySourceProperty);
           let distanceToResource = PathFinder.search(creep.pos, energySource).path.length;
           if(distanceToResource < minDistance){
             minDistance = distanceToResource;
@@ -27,17 +27,42 @@ module.exports = function() {
     //   links: links
     // }
 
+    var creepRemainingCapacity = creep.carryCapacity - creep.carry;
     var target = undefined;
     var energyObject = creep.room.memory.energyObject;
     // first look for rawEnergy
-    let rawEnergy = energyObject['rawEnergy'];
-    target = findClosestEnergySource(rawEnergy);
+    if(target == undefined){
+      let rawEnergyProperty = 'rawEnergy';
+      let rawEnergy = energyObject[rawEnergyProperty];
+      target = findClosestEnergySource(rawEnergy);
+      if(target != undefined){
+        creep.room.memory.energyObject[rawEnergyProperty][target.id] -= creepRemainingCapacity;
+        creep.moveTo(target);
+        creep.pickup(target);
+      }
+    }
     // next look for tombstones
-    let tombstones = energyObject['tombstones'];
-    target = findClosestEnergySource(tombstones);
+    if(target == undefined){
+      let tombstomeProperty = 'tombstones';
+      let tombstones = energyObject[tombstomeProperty];
+      target = findClosestEnergySource(tombstones);
+      if(target != undefined){
+        creep.room.memory.energyObject[tombstomeProperty][target.id] -= creepRemainingCapacity;
+        creep.moveTo(target);
+        creep.withdraw(target, RESOURCE_ENERGY);
+      }
+    }
     // next look for containers
-    let containers = energyObject['containers'];
-    target = findClosestEnergySource(containers);
+    if(target == undefined){
+      let containerProperty = 'containers';
+      let containers = energyObject[containerProperty];
+      target = findClosestEnergySource(containers);
+      if(target != undefined){
+        creep.room.memory.energyObject[containerProperty][target.id] -= creepRemainingCapacity;
+        creep.moveTo(target);
+        creep.withdraw(target, RESOURCE_ENERGY);
+      }
+    }
   }
 
 

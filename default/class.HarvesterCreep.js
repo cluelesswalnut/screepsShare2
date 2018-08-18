@@ -1,4 +1,5 @@
 var roleUpgrader = require('role.upgrader');
+var roleBuilder = require('role.builder');
 var BaseCreep = require('class.BaseCreep')
 
 class HarvesterCreep extends BaseCreep{
@@ -12,6 +13,8 @@ class HarvesterCreep extends BaseCreep{
 		{
 			return;
 		}
+		// roleBuilder.run(this.creep)
+		// return;
 		// can make this a function on BaseCreep?? maybe not
 		// can make it a function somewhere though and add more complex logic to check if
 		// it is worth it to grab/deposit energy b4 moving
@@ -34,12 +37,13 @@ class HarvesterCreep extends BaseCreep{
 
 	storeEnergy(){
 		var myEnergyHolders = this.creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-		filter: (mEH) => mEH.energy < mEH.energyCapacity && mEH.structureType != STRUCTURE_CONTAINER && mEH.structureType != STRUCTURE_STORAGE
+		filter: (mEH) => mEH.energy < mEH.energyCapacity && mEH.structureType != STRUCTURE_CONTAINER && mEH.structureType != STRUCTURE_STORAGE && mEH.structureType != STRUCTURE_TOWER
 		});
 
 		var towers = this.creep.room.find(FIND_MY_STRUCTURES, {filter: (structure) => structure.structureType == STRUCTURE_TOWER && structure.energy < structure.energyCapacity });
 
-		if(towers.length != 0)
+		let myCreeps = this.creep.room.find(FIND_MY_CREEPS);
+		if(towers.length != 0 && myCreeps.length > 3)
 		{
 		myEnergyHolders = towers[0];
 		}
