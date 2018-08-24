@@ -6,95 +6,83 @@ require('role.testContiainerGrab')();
 class DesignatedUpgraderCreep extends BaseCreep {
   constructor(name, homeRoom, body, respawn) {
     super(name, homeRoom, body, respawn);
-  }
 
-  work() {
-    if(!this.exists())
-      return;
+    // example of creating new name
+    // let n = 'b0-E52S43-1';
+    // let dashIndex = n.substring(4, n.length).search('-');
+    // console.log(dashIndex)
+    // var test = n.substring(0, dashIndex + 4 + 1 ) + (Number(n.substring(dashIndex + 4 + 1, n.length)) + 1);
+    // console.log(test);
+
     // this is the miner comment, but it applies to the designated upgrader too
     // respawn a new miner so it will be at the source when the old one dies...
     // this seems hard because it has to have a different name than the original miner, Idk how to handle this yet.
     // base this on the distance to the source or something
-    if(this.creep.ticksToLive < 60){
+    // if (this.creep.ticksToLive < 60 && false) {
+    //   // Checkout javascripts match() function. Let's use that in combination with a regex. In this example, the regular expression is /d/gi. This means we are looking for occurrences of the letter "d". The "g" is a regex modifier. It means "global". So look for all occurrences of the letter "d". Without the "global" modifier, the regex would just stop on the first "d". The i is another regex modifier. It means "case insensitive".
+    //   let num_matches = name.match(/-/gi).length;
+    //   if(num_matches == 1){
+    //     var newName = name + '-1';
+    //   }
+    //   else{
+    //     let dashIndex = name.substring(4, name.length).search('-');
+    //     var newName = name.substring(0, dashIndex + 4 + 1 ) + (Number(name.substring(dashIndex + 4 + 1, name.length)) + 1);
+    //   }
+    //   if(this.creep.name.length == )
+    //   let newCreep = new DesignatedUpgraderCreep(name, homeRoom, body, respawn);
+    // }
+  }
 
+  work() {
+    if (!this.exists())
+      return;
+
+    // return untill creep is at controller
+    if (!this.moveToController()) {
+      return;
+    };
+
+    let controller = this.creep.room.controller;
+    var gameLinks = controller.pos.findInRange(FIND_STRUCTURES, 4, {
+      filter: (struct) => struct.structureType == STRUCTURE_LINK
+    });
+    var linkConstructionSites = controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 4, {
+      filter: (struct) => struct.structureType == STRUCTURE_LINK
+    });
+    let gameLinkObjects = gameLinks.concat(linkConstructionSites);
+
+    if (gameLinkObjects.length > 0) {
+      this.creep.moveTo(gameLinkObjects[0]);
+    } else {
+      this.creep.room.createConstructionSite(this.creep.pos, STRUCTURE_LINK);
     }
 
-      let controller = this.creep.room.controller;
-      // move to the source
-      let contollerInRange = this.creep.pos.getRangeTo(controller) <= 3;
-      if (!contollerInRange) {
-        this.creep.moveTo(controller, {
-          visualizePathStyle: {
-            stroke: '#ffaa00'
-          }
-        });
-        return;
-      }
+    if (gameLinks == undefined || gameLinks.length <= 0) {
+      return;
+    }
 
-      // check for a container. Move there, or create one of none exists
-      let gameContainers = controller.pos.findInRange(FIND_STRUCTURES, 3, {
-        filter: (struct) => struct.structureType == STRUCTURE_CONTAINER
-      });
-      let containerConstructionSites = controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 3, {
-        filter: (struct) => struct.structureType == STRUCTURE_CONTAINER
-      });
-      let gameContainerObjects = gameContainers.concat(containerConstructionSites);
-
-      if (gameContainerObjects.length > 0) {
-        this.creep.moveTo(gameContainerObjects[0]);
-      } else {
-        this.creep.room.createConstructionSite(this.creep.pos, STRUCTURE_CONTAINER);
-      }
-
-      // if the creep is on the container take care of the link
-      if(gameContainerObjects.length > 0 && this.creep.pos.isEqualTo(gameContainerObjects[0])){
-        var gameLinks = controller.pos.findInRange(FIND_STRUCTURES, 4, {
-          filter: (struct) => struct.structureType == STRUCTURE_LINK
-        });
-        var linkConstructionSites = controller.pos.findInRange(FIND_MY_CONSTRUCTION_SITES, 4, {
-          filter: (struct) => struct.structureType == STRUCTURE_LINK
-        });
-        let gameLinkObjects = gameLinks.concat(linkConstructionSites);
-        if (gameLinkObjects.length <= 0) {
-          let xpos = this.creep.pos.x;
-          let ypos = this.creep.pos.y;
-          let room = this.creep.room.name;
-          let result = ERR_INVALID_TARGET;
-          var count = 0;
-          while(result != OK && count < 10){
-            count++;
-            console.log('count ' + count)
-            // console.log('22')
-            let xInc = Math.floor(Math.random() * Math.floor(2)) - 1;
-            let yInc = Math.floor(Math.random() * Math.floor(2)) - 1;
-            result = this.creep.room.createConstructionSite(new RoomPosition(xpos + xInc, ypos + yInc, room), STRUCTURE_LINK);
-          }
-        }
-
-      }
-
-      if(gameLinks != undefined && gameLinks.length <= 0 || gameContainers.length <= 0){
-        return;
-      }
-
+    if (gameLinks != undefined && gameLinks.length > 0) {
       var gameLink = gameLinks[0];
-      var gameContainer = gameContainers[0];
-      // if(gameLink.energy > 0 && gameContainer.store[RESOURCE_ENERGY] < gameContainer.storeCapacity - this.creep.carryCapacity){
-      //   console.log('1')
-      //   this.creep.withdraw(gameLink, RESOURCE_ENERGY, this.creep.carryCapacity - this.creep.carry);
-      //   console.log(this.creep.upgradeController(controller));
-      //   this.creep.transfer(gameContainer, RESOURCE_ENERGY);
-      // }
-      // else{
-        // console.log('2')
-        // console.log(this.creep.withdraw(gameLink, RESOURCE_ENERGY));
-        this.creep.upgradeController(controller);
-        this.creep.withdraw(gameLink, RESOURCE_ENERGY);
-      // }
 
-      // Add code to repair and container
-      // this.creep.repair(gameContainers[0]);
+      this.creep.upgradeController(controller);
+      this.creep.withdraw(gameLink, RESOURCE_ENERGY);
+    }
 
+  }
+
+  moveToController() {
+    let controller = this.creep.room.controller;
+    // move to the source
+    let contollerInRange = this.creep.pos.getRangeTo(controller) <= 3;
+    if (!contollerInRange) {
+      this.creep.moveTo(controller, {
+        visualizePathStyle: {
+          stroke: '#ffaa00'
+        }
+      });
+      return false;
+    }
+    return true;
   }
 
 }

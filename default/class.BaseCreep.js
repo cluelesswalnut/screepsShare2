@@ -1,7 +1,20 @@
 require('role.testContiainerGrab')();
 
 class BaseCreep{
-  constructor(name, homeRoom, bodyParts, respawn){
+  constructor(symbolicName, homeRoom, bodyParts, respawn){
+    this.symbolicName = symbolicName;
+    // find the "real" name of the creep
+    if(Memory.realCreepNames == undefined){
+      Memory.realCreepNames = {};
+    }
+    if(!Memory.realCreepNames.hasOwnProperty(symbolicName)){
+      Memory.realCreepNames[symbolicName] = symbolicName;
+    }
+    else{
+      var name = Memory.realCreepNames[symbolicName];
+    }
+    // let name = Game.memory.realCreepNames[symbolicName]
+    // let name = symbolicName;
     this.name = name;
     this.homeRoom = homeRoom;
     this.spawn = homeRoom.find(FIND_MY_SPAWNS)[0];

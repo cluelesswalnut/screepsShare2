@@ -69,7 +69,13 @@ class HarvesterCreep extends BaseCreep{
 		}
 		}
 		else{
-		roleUpgrader.run(this.creep);
+			if(this.creep.room.storage == undefined){
+				roleUpgrader.run(this.creep);
+			}else{
+				let store = this.creep.room.storage;
+				this.creep.moveTo(store);
+				this.creep.transfer(store, RESOURCE_ENERGY);
+			}
 		}
 	}
 }
