@@ -30,11 +30,13 @@ class MyRoom {
     // });
     // this.findRoomObjects();
 
+
     this.locateAvaliableEnergy();
 
     this.adjustCreepCount();
 
     this.linkEnergyTransfer();
+
   }
 
   operate() {
@@ -109,10 +111,10 @@ class MyRoom {
     let bodySetCost = 200;
     let bodyPartSets = Math.floor(this.room.energyCapacityAvailable / bodySetCost);
     var balanceBody = [];
-    for (let i = 0; i < bodyPartSets; ++i) {
+    let bodySetsNeeded = 12;
+    for (let i = 0; i < bodyPartSets && i < bodySetsNeeded; ++i) {
       balanceBody = balanceBody.concat(bodySet);
     }
-    let bodySetsNeeded = 12;
 
     // find how many of each creep is needed based on the body size
     var maxHarvesters = Math.min(8, 12 / bodyPartSets) + Memory[this.name + 'ExtraUpgraders'];
@@ -122,6 +124,8 @@ class MyRoom {
     var maxMiners = this.room.energyCapacityAvailable >= 550 ? this.sources.length : 0;
     var maxDesignatedUpgraderCreep = 1;
     var maxClaimers = 0;
+
+    maxHarvesters = Math.max(maxHarvesters, 2);
 
     return {
       balanceBody: balanceBody,
@@ -161,11 +165,11 @@ class MyRoom {
     }
 
     for (let i = 0; i < specs.maxHarvesters; ++i) {
-      //
       let uniqueParts = [WORK, MOVE];
       let baseParts = [CARRY, CARRY, MOVE];
       let maxBaseParts = 10;
       let body = this.calculateBody(uniqueParts, baseParts, maxBaseParts);
+
       if (this.DesignatedUpgrader) {
         var myCreep = new HarvesterCreep('h' + i + '-' + this.name, this.room, body, spawn);
       } else {
@@ -280,8 +284,12 @@ class MyRoom {
       fullContainers.forEach(() => {
         Memory[this.name + 'ExtraUpgraders']++;
       })
-      if (Memory[this.name + 'ExtraUpgraders'] > 2) {
-        Memory[this.name + 'ExtraUpgraders'] = 2;
+      // this isnt needed with larger harvesters
+      // if (Memory[this.name + 'ExtraUpgraders'] > 0) {
+      //   Memory[this.name + 'ExtraUpgraders'] = 0;
+      // }
+      if (Memory[this.name + 'ExtraUpgraders'] > 0) {
+        Memory[this.name + 'ExtraUpgraders'] = 0;
       }
       if (fullContainers.length == 0 && emptyContainers.length > 0) {
         Memory[this.name + 'ExtraUpgraders']--;

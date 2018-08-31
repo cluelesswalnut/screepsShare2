@@ -92,14 +92,32 @@ catch(error){
   // var getEnergy = new getEnergy('g0', Game.rooms['E52S43'], [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]);
 
 // test room Object
+try{
 var myRoom2 = new MyRoom('E52S41');
 myRoom2.operate();
+}
+catch(error)
+{
+  console.log("crash room 1");
+}
 
+try{
 var myRoom = new MyRoom('E52S43');
 myRoom.operate();
+}
+catch(error)
+{
+  console.log("crash room 2");
+}
 
+try{
 var myRoom3 = new MyRoom('E53S44');
 myRoom3.operate();
+}
+catch(error)
+{
+  console.log("crash room 3");
+}
 
 var hostileCreeps = Game.spawns.Spawn1.room.find(FIND_HOSTILE_CREEPS, {filter: (c) => c.owner.username != 'LightLemmonDrop' && c.owner.username != 'LoveL'});
 // console.log(hostileCreeps.length);

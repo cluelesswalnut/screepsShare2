@@ -18,18 +18,33 @@ class DesignatedUpgraderCreep extends BaseCreep {
     // respawn a new miner so it will be at the source when the old one dies...
     // this seems hard because it has to have a different name than the original miner, Idk how to handle this yet.
     // base this on the distance to the source or something
-    // if (this.creep.ticksToLive < 60 && false) {
-    //   // Checkout javascripts match() function. Let's use that in combination with a regex. In this example, the regular expression is /d/gi. This means we are looking for occurrences of the letter "d". The "g" is a regex modifier. It means "global". So look for all occurrences of the letter "d". Without the "global" modifier, the regex would just stop on the first "d". The i is another regex modifier. It means "case insensitive".
-    //   let num_matches = name.match(/-/gi).length;
-    //   if(num_matches == 1){
-    //     var newName = name + '-1';
-    //   }
-    //   else{
-    //     let dashIndex = name.substring(4, name.length).search('-');
-    //     var newName = name.substring(0, dashIndex + 4 + 1 ) + (Number(name.substring(dashIndex + 4 + 1, name.length)) + 1);
-    //   }
-    //   if(this.creep.name.length == )
-    //   let newCreep = new DesignatedUpgraderCreep(name, homeRoom, body, respawn);
+    // if (this.exists() && this.creep.room.name == 'E53S44'){
+    //
+    //       if (this.exists() && this.creep.ticksToLive < 60 && this.creep.memory.backup != true) { // and this isnt the back up creep.. how do i do that? backup = true in memory
+    //         // Checkout javascripts match() function. Let's use that in combination with a regex.
+    //         // In this example, the regular expression is /d/gi. This means we are looking for occurrences of the letter "d".
+    //         // The "g" is a regex modifier. It means "global". So look for all occurrences of the letter "d". Without the "global" modifier,
+    //         // the regex would just stop on the first "d". The i is another regex modifier. It means "case insensitive".
+    //         let num_matches = this.name.match(/-/gi).length;  // check how many '-' there are
+    //         if(num_matches == 1){ // only 1 '-' start the count at 1
+    //           var newName = name + '-1';
+    //         }
+    //         else{ // multiple '-' increment the count
+    //           let dashIndex = this.name.substring(4, this.name.length).search('-');
+    //           var symbolicName = this.name.substring(0, dashIndex + 4 + 1 );
+    //           var newName = symbolicName + (Number(this.name.substring(dashIndex + 4 + 1, this.name.length)) + 1);
+    //         }
+    //         // console.log(newName)
+    //         var newCreep = new DesignatedUpgraderCreep(newName, homeRoom, body, respawn); // operate the backup creep
+    //         newCreep.work();
+    //         if(newCreep.exists()){
+    //           newCreep.creep.memory.backup = true;
+    //         }
+    //         if(this.creep.ticksToLive == 1){ // if it is the real creeps last tick to live, update the name of the creep to the name of the backup creep
+    //           Memory.realCreepNames[symbolicName] = newName;
+    //           newCreep.creep.memory.backup = false;
+    //         }
+    //       }
     // }
   }
 
